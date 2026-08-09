@@ -46,42 +46,6 @@
   ::selection { background: rgba(56, 189, 248, 0.2); color: var(--accent); }
   a { color: var(--accent); text-decoration: none; }
 
-  /* ---------- PIN LOCK ---------- */
-  #lockScreen {
-    position: fixed; inset: 0; z-index: 999;
-    background: var(--bg);
-    display: flex; align-items: center; justify-content: center;
-    flex-direction: column; gap: 18px; padding: 24px;
-  }
-  .lock-box {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 36px 30px;
-    width: 100%; max-width: 380px; box-shadow: var(--shadow);
-    text-align: center;
-  }
-  .lock-icon {
-    width: 56px; height: 56px; border-radius: 14px;
-    background: var(--blue-bg); color: var(--accent);
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 16px; font-size: 26px; border: 1px solid rgba(56, 189, 248, 0.2);
-  }
-  .lock-box h2 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
-  .lock-box p { color: var(--muted); font-size: 13px; margin-bottom: 22px; }
-  #pinInput {
-    width: 100%; padding: 14px; font-size: 24px; letter-spacing: 10px;
-    text-align: center; background: var(--bg-alt); border: 1px solid var(--border);
-    border-radius: 12px; color: var(--text); outline: none; transition: 0.2s;
-  }
-  #pinInput:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15); }
-  .lock-btn {
-    margin-top: 16px; width: 100%; padding: 13px; border: none; border-radius: 12px;
-    background: var(--accent); color: #03131a; font-weight: 700; font-size: 14px;
-    cursor: pointer; transition: .2s;
-  }
-  .lock-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
-  #lockError { color: var(--red); font-size: 12px; margin-top: 10px; min-height: 16px; font-weight: 500; }
-  .lock-hint { color: var(--muted); font-size: 11px; margin-top: 14px; }
-
   /* ---------- LAYOUT ---------- */
   #app { display: block; max-width: 1240px; margin: 0 auto; padding: 24px 20px 60px; }
   
@@ -109,23 +73,10 @@
   .dot.off { background: var(--red); box-shadow: 0 0 10px var(--red); }
   .dot.pending { background: var(--yellow); box-shadow: 0 0 10px var(--yellow); }
 
-  .lock-toggle {
-    background: var(--bg-alt); border: 1px solid var(--border); color: var(--text);
-    padding: 8px 14px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s;
-  }
-  .lock-toggle:hover { border-color: var(--accent); color: var(--accent); }
-
-  .role-badge {
+  .user-badge {
     display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700;
     padding: 7px 14px; border-radius: 30px; border: 1px solid var(--border);
-  }
-  .role-badge.role-admin { color: var(--accent); border-color: rgba(56, 189, 248, 0.3); background: var(--blue-bg); }
-  .role-badge.role-user { color: var(--muted); background: var(--bg-alt); }
-  
-  .readonly-banner {
-    background: var(--yellow-bg); color: var(--yellow); border: 1px solid rgba(245, 158, 11, 0.25);
-    border-radius: 12px; padding: 12px 18px; font-size: 13px; font-weight: 500; margin-bottom: 20px;
-    display: flex; align-items: center; gap: 10px;
+    color: var(--accent); border-color: rgba(56, 189, 248, 0.3); background: var(--blue-bg);
   }
 
   /* Summary Cards */
@@ -224,6 +175,7 @@
   .modal-box h3 { font-size: 18px; font-weight: 800; margin-bottom: 20px; letter-spacing: -0.01em; }
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .form-grid .full { grid-column: 1/-1; }
+  .field { margin-bottom: 12px; }
   .field label { font-size: 12px; font-weight: 600; color: var(--muted); display: block; margin-bottom: 6px; }
   .field input, .field select, .field textarea {
     width: 100%; background: var(--bg-alt); border: 1px solid var(--border); color: var(--text);
@@ -239,7 +191,6 @@
   }
   .btn-ghost:hover { color: var(--text); border-color: rgba(255, 255, 255, 0.2); }
 
-  /* Mobile Responsive Card Layout */
   @media (max-width: 768px) {
     #app { padding: 16px 12px 40px; }
     .summary-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -276,21 +227,16 @@
       <div class="brand-logo">📈</div>
       <div>
         <h1>Trading Account Tracker</h1>
-        <span>Multi-device • Real-time sync</span>
+        <span>Multi-user • Real-time Cloud Sync</span>
       </div>
     </div>
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
       <div id="syncStatus"><span class="dot pending" id="syncDot"></span><span id="syncText">Menghubungkan...</span></div>
-      <span class="role-badge" id="roleBadge"></span>
-      <button class="lock-toggle" id="changeAdminPinBtn" style="display:none;">⚙ Ubah PIN Admin</button>
-      <button class="btn-primary" id="adminLoginBtn" style="padding:8px 14px;font-size:12px;">🔑 Masuk Admin</button>
-      <button class="lock-toggle" id="adminLogoutBtn" style="display:none;">🔓 Keluar Admin</button>
+      <span class="user-badge" id="userBadge" style="display:none;"></span>
+      <button class="btn-primary" id="loginBtn" style="padding:8px 14px;font-size:12px;">🔑 Masuk / Daftar</button>
+      <button class="btn-ghost" id="logoutBtn" style="display:none;padding:8px 14px;font-size:12px;">🚪 Keluar</button>
     </div>
   </header>
-
-  <div class="readonly-banner" id="readonlyBanner" style="display:none;">
-    👁 Anda masuk sebagai <strong>User (Read-only)</strong> — hanya bisa melihat data, tidak bisa menambah/mengubah/menghapus akun.
-  </div>
 
   <div class="summary-grid">
     <div class="sum-card">
@@ -349,11 +295,11 @@
       <tbody id="tableBody">
       </tbody>
     </table>
-    <div class="empty-state" id="emptyState" style="display:none;">Belum ada akun trading. Klik "+ Tambah Akun" untuk mulai.</div>
+    <div class="empty-state" id="emptyState" style="display:none;">Silakan Login untuk melihat dan mengelola akun trading Anda.</div>
   </div>
 </div>
 
-<!-- ================= FORM MODAL ================= -->
+<!-- ================= FORM MODAL ACCOUNT ================= -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal-box">
     <h3 id="modalTitle">Tambah Akun Trading</h3>
@@ -411,37 +357,26 @@
   </div>
 </div>
 
-<!-- ================= MASUK ADMIN MODAL ================= -->
-<div class="modal-overlay" id="adminPinOverlay">
-  <div class="modal-box" style="max-width:380px;text-align:center;">
-    <div class="lock-icon" style="margin:0 auto 14px;">🔑</div>
-    <h3 id="adminPinTitle">Masuk sebagai Admin</h3>
-    <p style="color:var(--muted);font-size:12.5px;margin:8px 0 16px;" id="adminPinDesc">Masukkan PIN Admin untuk membuka akses tambah/edit/hapus.</p>
-    <input type="password" id="adminPinInput" inputmode="numeric" maxlength="8" placeholder="••••">
-    <div id="adminPinError" style="color:var(--red);font-size:12px;margin-top:10px;min-height:16px;"></div>
-    <div class="modal-actions" style="justify-content:center;margin-top:6px;">
-      <button type="button" class="btn-ghost" id="cancelAdminPinBtn">Batal</button>
-      <button type="button" class="btn-primary" id="adminPinSubmitBtn">Masuk</button>
-    </div>
-  </div>
-</div>
-
-<!-- ================= UBAH PIN ADMIN MODAL ================= -->
-<div class="modal-overlay" id="pinManageOverlay">
-  <div class="modal-box" style="max-width:400px;">
-    <h3>Ubah PIN Admin</h3>
-    <p style="color:var(--muted);font-size:12.5px;margin-bottom:16px;">
-      Ganti PIN yang dipakai untuk masuk mode Admin (akses tambah/edit/hapus).
-    </p>
-    <div class="field" style="margin-bottom:12px;">
-      <label>PIN Admin Baru (4-8 digit)</label>
-      <input type="password" id="newAdminPin" inputmode="numeric" maxlength="8" placeholder="••••">
-    </div>
-    <div id="pinManageError" style="color:var(--red);font-size:12px;min-height:16px;margin-bottom:6px;"></div>
-    <div class="modal-actions">
-      <button type="button" class="btn-ghost" id="cancelPinManageBtn">Batal</button>
-      <button type="button" class="btn-primary" id="saveAdminPinBtn">Simpan</button>
-    </div>
+<!-- ================= AUTH MODAL (LOGIN / REGISTER) ================= -->
+<div class="modal-overlay" id="authOverlay">
+  <div class="modal-box" style="max-width:380px;">
+    <h3 id="authTitle">Masuk ke Akun Anda</h3>
+    <form id="authForm">
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="authEmail" placeholder="nama@email.com" required>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="authPassword" placeholder="••••••••" required>
+      </div>
+      <div id="authError" style="color:var(--red);font-size:12px;margin-top:6px;min-height:16px;"></div>
+      <div class="modal-actions" style="flex-direction:column;gap:8px;margin-top:16px;">
+        <button type="submit" class="btn-primary" id="authSubmitBtn" style="width:100%;">Masuk</button>
+        <button type="button" class="btn-ghost" id="authToggleBtn" style="width:100%;font-size:12px;">Belum punya akun? Daftar</button>
+        <button type="button" class="btn-ghost" id="cancelAuthBtn" style="width:100%;border:none;">Batal</button>
+      </div>
+    </form>
   </div>
 </div>
 
@@ -454,13 +389,12 @@
 const SUPABASE_URL = "https://ctxtkilkceninsvjqvxs.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_8lW88kfOjhFfvJ3nsE472g_d-x63Teu";
 const TABLE_NAME = "trading_accounts";
-const ADMIN_PIN_DEFAULT = "4223"; // PIN Admin bawaan
 /* ========================================================================= */
 
 let sb = null;
 let accounts = [];
-let editingId = null;
-let realtimeReady = false;
+let currentUser = null;
+let isRegisterMode = false;
 
 function initSupabase(){
   if(SUPABASE_URL.includes("YOUR-PROJECT-ID") || SUPABASE_ANON_KEY.includes("YOUR-ANON")){
@@ -470,8 +404,20 @@ function initSupabase(){
     return;
   }
   sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  fetchAccounts();
-  subscribeRealtime();
+
+  // Cek Status Auth Session
+  sb.auth.onAuthStateChange((event, session) => {
+    currentUser = session ? session.user : null;
+    updateAuthUI();
+    if (currentUser) {
+      fetchAccounts();
+      subscribeRealtime();
+    } else {
+      accounts = [];
+      setSyncStatus('off', 'Belum Login');
+      render();
+    }
+  });
 }
 
 function setSyncStatus(state, text){
@@ -482,8 +428,14 @@ function setSyncStatus(state, text){
 }
 
 async function fetchAccounts(){
+  if(!currentUser) return;
   setSyncStatus('pending', 'Menyinkronkan...');
-  const { data, error } = await sb.from(TABLE_NAME).select('*').order('created_at', { ascending: true });
+  const { data, error } = await sb
+    .from(TABLE_NAME)
+    .select('*')
+    .eq('user_id', currentUser.id)
+    .order('created_at', { ascending: true });
+
   if(error){
     console.error(error);
     setSyncStatus('off', 'Gagal terhubung');
@@ -495,28 +447,25 @@ async function fetchAccounts(){
 }
 
 function subscribeRealtime(){
+  if(!currentUser) return;
   sb.channel('public:' + TABLE_NAME)
-    .on('postgres_changes', { event: '*', schema: 'public', table: TABLE_NAME }, () => {
+    .on('postgres_changes', { 
+      event: '*', 
+      schema: 'public', 
+      table: TABLE_NAME,
+      filter: `user_id=eq.${currentUser.id}` 
+    }, () => {
       fetchAccounts();
     })
     .subscribe();
 }
 
-function isAdmin(){
-  return sessionStorage.getItem('tt_role') === 'admin';
-}
-
-function blockIfNotAdmin(){
-  if(!isAdmin()){
-    alert('Mode User hanya bisa melihat data. Tambah/ubah/hapus hanya untuk Admin.');
-    return true;
-  }
-  return false;
-}
-
 async function saveAccount(payload){
-  if(blockIfNotAdmin()) return;
+  if(!currentUser) return alert('Silakan login terlebih dahulu.');
   setSyncStatus('pending', 'Menyimpan...');
+  
+  payload.user_id = currentUser.id;
+
   if(payload.id){
     const id = payload.id;
     delete payload.id;
@@ -530,7 +479,7 @@ async function saveAccount(payload){
 }
 
 async function deleteAccount(id){
-  if(blockIfNotAdmin()) return;
+  if(!currentUser) return alert('Silakan login terlebih dahulu.');
   if(!confirm('Hapus akun trading ini?')) return;
   setSyncStatus('pending', 'Menghapus...');
   const { error } = await sb.from(TABLE_NAME).delete().eq('id', id);
@@ -559,6 +508,17 @@ function render(){
   const fStatus = document.getElementById('filterStatus').value;
   const fType = document.getElementById('filterType').value;
 
+  const tbody = document.getElementById('tableBody');
+  const emptyState = document.getElementById('emptyState');
+  tbody.innerHTML = '';
+
+  if(!currentUser) {
+    emptyState.style.display = 'block';
+    emptyState.textContent = 'Silakan Login untuk melihat dan mengelola akun trading Anda.';
+    resetSummary();
+    return;
+  }
+
   const filtered = accounts.filter(a => {
     if(search && !(a.provider||'').toLowerCase().includes(search)) return false;
     if(fStatus && a.status !== fStatus) return false;
@@ -566,13 +526,9 @@ function render(){
     return true;
   });
 
-  const tbody = document.getElementById('tableBody');
-  const emptyState = document.getElementById('emptyState');
-  tbody.innerHTML = '';
-
   if(filtered.length === 0){
     emptyState.style.display = 'block';
-    if(accounts.length > 0) emptyState.textContent = 'Tidak ada akun yang cocok dengan pencarian/filter.';
+    emptyState.textContent = accounts.length > 0 ? 'Tidak ada akun yang cocok dengan pencarian/filter.' : 'Belum ada akun trading. Klik "+ Tambah Akun" untuk mulai.';
   } else {
     emptyState.style.display = 'none';
   }
@@ -594,11 +550,10 @@ function render(){
       <td data-label="P/L"><span class="${plClass}">${plSign}${fmtMoney(pl)}</span></td>
       <td data-label="Status"><span class="badge ${statusBadgeClass(a.status)}">${escapeHtml(a.status||'-')}</span></td>
       <td data-label="">
-        ${isAdmin() ? `
         <div class="row-actions">
           <button class="icon-btn" onclick="openEdit('${a.id}')" title="Edit">✏️</button>
           <button class="icon-btn del" onclick="deleteAccount('${a.id}')" title="Hapus">🗑️</button>
-        </div>` : ''}
+        </div>
       </td>
     `;
     tbody.appendChild(tr);
@@ -621,18 +576,27 @@ function render(){
   document.getElementById('sumTotalAcc').textContent = 'dari ' + accounts.length + ' total akun';
 }
 
+function resetSummary(){
+  document.getElementById('sumInitial').textContent = '$0.00';
+  document.getElementById('sumCurrent').textContent = '$0.00';
+  document.getElementById('sumPL').textContent = '$0.00';
+  document.getElementById('sumPL').className = 'sum-value';
+  document.getElementById('sumPLPct').textContent = '0%';
+  document.getElementById('sumActive').textContent = '0';
+  document.getElementById('sumTotalAcc').textContent = 'dari 0 total akun';
+}
+
 function escapeHtml(str){
   const div = document.createElement('div');
   div.textContent = str;
   return div.innerHTML;
 }
 
-/* ---------------- MODAL / FORM ---------------- */
+/* ---------------- MODAL / FORM ACCOUNT ---------------- */
 const modalOverlay = document.getElementById('modalOverlay');
 
 function openAdd(){
-  if(blockIfNotAdmin()) return;
-  editingId = null;
+  if(!currentUser) return alert('Silakan login terlebih dahulu untuk menambah data.');
   document.getElementById('modalTitle').textContent = 'Tambah Akun Trading';
   document.getElementById('accountForm').reset();
   document.getElementById('fId').value = '';
@@ -640,10 +604,9 @@ function openAdd(){
 }
 
 function openEdit(id){
-  if(blockIfNotAdmin()) return;
+  if(!currentUser) return;
   const a = accounts.find(x => x.id === id);
   if(!a) return;
-  editingId = id;
   document.getElementById('modalTitle').textContent = 'Edit Akun Trading';
   document.getElementById('fId').value = a.id;
   document.getElementById('fProvider').value = a.provider || '';
@@ -657,9 +620,7 @@ function openEdit(id){
   modalOverlay.style.display = 'flex';
 }
 
-function closeModal(){
-  modalOverlay.style.display = 'none';
-}
+function closeModal(){ modalOverlay.style.display = 'none'; }
 
 document.getElementById('addBtn').addEventListener('click', openAdd);
 document.getElementById('cancelBtn').addEventListener('click', closeModal);
@@ -687,133 +648,85 @@ document.getElementById('searchInput').addEventListener('input', render);
 document.getElementById('filterStatus').addEventListener('change', render);
 document.getElementById('filterType').addEventListener('change', render);
 
-/* ---------------- ROLE: user / admin ---------------- */
-const ADMIN_PIN_KEY = 'tt_admin_pin_hash';
-const OLD_PIN_KEY = 'tt_pin_hash';        
-const OLD_USER_PIN_KEY = 'tt_user_pin_hash';
+/* ---------------- AUTHENTICATION UI & LOGIC ---------------- */
+const authOverlay = document.getElementById('authOverlay');
+const authForm = document.getElementById('authForm');
+const authTitle = document.getElementById('authTitle');
+const authSubmitBtn = document.getElementById('authSubmitBtn');
+const authToggleBtn = document.getElementById('authToggleBtn');
+const authError = document.getElementById('authError');
 
-if(localStorage.getItem(OLD_PIN_KEY) && !localStorage.getItem(ADMIN_PIN_KEY)){
-  localStorage.setItem(ADMIN_PIN_KEY, localStorage.getItem(OLD_PIN_KEY));
-  localStorage.removeItem(OLD_PIN_KEY);
-}
-localStorage.removeItem(OLD_USER_PIN_KEY);
+function updateAuthUI(){
+  const loginBtn = document.getElementById('loginBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const userBadge = document.getElementById('userBadge');
 
-function simpleHash(str){
-  let hash = 0;
-  for(let i=0;i<str.length;i++){
-    hash = ((hash << 5) - hash) + str.charCodeAt(i);
-    hash |= 0;
-  }
-  return hash.toString();
-}
-
-function hasAdminPin(){ return true; }
-function getAdminPinHash(){
-  const override = localStorage.getItem(ADMIN_PIN_KEY);
-  return override || simpleHash(ADMIN_PIN_DEFAULT);
-}
-function currentRole(){ return sessionStorage.getItem('tt_role') === 'admin' ? 'admin' : 'user'; }
-
-function updateRoleUI(){
-  const role = currentRole();
-  const badge = document.getElementById('roleBadge');
-  const banner = document.getElementById('readonlyBanner');
-  const addBtn = document.getElementById('addBtn');
-  const loginBtn = document.getElementById('adminLoginBtn');
-  const logoutBtn = document.getElementById('adminLogoutBtn');
-  const changePinBtn = document.getElementById('changeAdminPinBtn');
-  if(role === 'admin'){
-    badge.textContent = '🛡 Admin';
-    badge.className = 'role-badge role-admin';
-    banner.style.display = 'none';
-    addBtn.style.display = 'inline-block';
+  if(currentUser){
     loginBtn.style.display = 'none';
     logoutBtn.style.display = 'inline-block';
-    changePinBtn.style.display = 'inline-block';
+    userBadge.style.display = 'inline-flex';
+    userBadge.textContent = '👤 ' + currentUser.email;
   } else {
-    badge.textContent = '👁 User (Read-only)';
-    badge.className = 'role-badge role-user';
-    banner.style.display = 'flex';
-    addBtn.style.display = 'none';
     loginBtn.style.display = 'inline-block';
     logoutBtn.style.display = 'none';
-    changePinBtn.style.display = 'none';
+    userBadge.style.display = 'none';
   }
-  render();
 }
 
-/* ---- Modal: Masuk sebagai Admin ---- */
-const adminPinOverlay = document.getElementById('adminPinOverlay');
-const adminPinInput = document.getElementById('adminPinInput');
-const adminPinTitle = document.getElementById('adminPinTitle');
-const adminPinDesc = document.getElementById('adminPinDesc');
-const adminPinError = document.getElementById('adminPinError');
-const adminPinSubmitBtn = document.getElementById('adminPinSubmitBtn');
+document.getElementById('loginBtn').addEventListener('click', () => {
+  isRegisterMode = false;
+  authTitle.textContent = 'Masuk ke Akun Anda';
+  authSubmitBtn.textContent = 'Masuk';
+  authToggleBtn.textContent = 'Belum punya akun? Daftar';
+  authError.textContent = '';
+  authOverlay.style.display = 'flex';
+});
 
-function openAdminPinModal(){
-  adminPinInput.value = '';
-  adminPinError.textContent = '';
-  adminPinTitle.textContent = 'Masuk sebagai Admin';
-  adminPinDesc.textContent = 'Masukkan PIN Admin untuk membuka akses tambah/edit/hapus.';
-  adminPinSubmitBtn.textContent = 'Masuk';
-  adminPinOverlay.style.display = 'flex';
-  adminPinInput.focus();
-}
+document.getElementById('cancelAuthBtn').addEventListener('click', () => {
+  authOverlay.style.display = 'none';
+});
 
-document.getElementById('adminLoginBtn').addEventListener('click', openAdminPinModal);
-document.getElementById('cancelAdminPinBtn').addEventListener('click', () => { adminPinOverlay.style.display = 'none'; });
-adminPinOverlay.addEventListener('click', (e) => { if(e.target === adminPinOverlay) adminPinOverlay.style.display = 'none'; });
-
-function handleAdminPinSubmit(){
-  const val = adminPinInput.value.trim();
-  adminPinError.textContent = '';
-  if(val.length < 4){
-    adminPinError.textContent = 'PIN minimal 4 digit.';
-    return;
-  }
-  if(simpleHash(val) === getAdminPinHash()){
-    sessionStorage.setItem('tt_role', 'admin');
-    adminPinOverlay.style.display = 'none';
-    updateRoleUI();
+authToggleBtn.addEventListener('click', () => {
+  isRegisterMode = !isRegisterMode;
+  authError.textContent = '';
+  if(isRegisterMode){
+    authTitle.textContent = 'Buat Akun Baru';
+    authSubmitBtn.textContent = 'Daftar';
+    authToggleBtn.textContent = 'Sudah punya akun? Masuk';
   } else {
-    adminPinError.textContent = 'PIN salah. Coba lagi.';
-    adminPinInput.value = '';
+    authTitle.textContent = 'Masuk ke Akun Anda';
+    authSubmitBtn.textContent = 'Masuk';
+    authToggleBtn.textContent = 'Belum punya akun? Daftar';
   }
-}
-adminPinSubmitBtn.addEventListener('click', handleAdminPinSubmit);
-adminPinInput.addEventListener('keydown', (e) => { if(e.key === 'Enter') handleAdminPinSubmit(); });
-
-document.getElementById('adminLogoutBtn').addEventListener('click', () => {
-  sessionStorage.removeItem('tt_role');
-  updateRoleUI();
 });
 
-/* ---- Modal: Ubah PIN Admin ---- */
-const pinManageOverlay = document.getElementById('pinManageOverlay');
-const newAdminPinInput = document.getElementById('newAdminPin');
-const pinManageError = document.getElementById('pinManageError');
+authForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  authError.textContent = '';
+  const email = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPassword').value;
 
-document.getElementById('changeAdminPinBtn').addEventListener('click', () => {
-  newAdminPinInput.value = '';
-  pinManageError.textContent = '';
-  pinManageOverlay.style.display = 'flex';
-});
-document.getElementById('cancelPinManageBtn').addEventListener('click', () => { pinManageOverlay.style.display = 'none'; });
-pinManageOverlay.addEventListener('click', (e) => { if(e.target === pinManageOverlay) pinManageOverlay.style.display = 'none'; });
-
-document.getElementById('saveAdminPinBtn').addEventListener('click', () => {
-  const val = newAdminPinInput.value.trim();
-  if(val.length < 4){
-    pinManageError.textContent = 'PIN minimal 4 digit.';
-    return;
+  if(isRegisterMode){
+    const { error } = await sb.auth.signUp({ email, password });
+    if(error){ authError.textContent = error.message; }
+    else {
+      alert('Pendaftaran berhasil! Silakan periksa email Anda jika konfirmasi diperlukan, atau langsung masuk.');
+      authOverlay.style.display = 'none';
+    }
+  } else {
+    const { error } = await sb.auth.signInWithPassword({ email, password });
+    if(error){ authError.textContent = error.message; }
+    else {
+      authOverlay.style.display = 'none';
+    }
   }
-  localStorage.setItem(ADMIN_PIN_KEY, simpleHash(val));
-  pinManageOverlay.style.display = 'none';
-  alert('PIN Admin berhasil diubah.');
+});
+
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  await sb.auth.signOut();
 });
 
 /* Boot */
-updateRoleUI();
 initSupabase();
 </script>
 </body>
