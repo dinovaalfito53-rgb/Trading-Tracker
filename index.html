@@ -74,7 +74,7 @@
   .lock-hint{color:var(--muted);font-size:11px;margin-top:14px;}
 
   /* ---------- LAYOUT ---------- */
-  #app{display:none;max-width:1200px;margin:0 auto;padding:18px 16px 60px;}
+  #app{display:block;max-width:1200px;margin:0 auto;padding:18px 16px 60px;}
   header.topbar{
     display:flex;align-items:center;justify-content:space-between;
     gap:12px;margin-bottom:20px;flex-wrap:wrap;
@@ -239,19 +239,6 @@
 </head>
 <body>
 
-<!-- ================= PIN LOCK ================= -->
-<div id="lockScreen">
-  <div class="lock-box">
-    <div class="lock-icon">🔒</div>
-    <h2 id="lockTitle">Masuk</h2>
-    <p id="lockDesc">Masukkan PIN untuk membuka data trading Anda.</p>
-    <input type="password" id="pinInput" inputmode="numeric" maxlength="8" placeholder="••••">
-    <button class="lock-btn" id="lockBtn">Buka</button>
-    <div id="lockError"></div>
-    <div class="lock-hint">Ada 2 jenis PIN: PIN Admin (akses penuh) dan PIN User (hanya lihat data). PIN tersimpan lokal di perangkat ini saja — proteksi ringan, bukan enkripsi tingkat tinggi.</div>
-  </div>
-</div>
-
 <!-- ================= APP ================= -->
 <div id="app">
   <header class="topbar">
@@ -265,8 +252,9 @@
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
       <div id="syncStatus"><span class="dot pending" id="syncDot"></span><span id="syncText">Menghubungkan...</span></div>
       <span class="role-badge" id="roleBadge"></span>
-      <button class="lock-toggle" id="managePinBtn" style="display:none;">⚙ Kelola PIN User</button>
-      <button class="lock-toggle" id="relockBtn">🔒 Kunci</button>
+      <button class="lock-toggle" id="changeAdminPinBtn" style="display:none;">⚙ Ubah PIN Admin</button>
+      <button class="btn-primary" id="adminLoginBtn" style="padding:8px 14px;font-size:12px;">🔑 Masuk Admin</button>
+      <button class="lock-toggle" id="adminLogoutBtn" style="display:none;">🔓 Keluar Admin</button>
     </div>
   </header>
 
@@ -393,22 +381,37 @@
   </div>
 </div>
 
-<!-- ================= KELOLA PIN USER MODAL (admin only) ================= -->
+<!-- ================= MASUK ADMIN MODAL ================= -->
+<div class="modal-overlay" id="adminPinOverlay">
+  <div class="modal-box" style="max-width:380px;text-align:center;">
+    <div class="lock-icon" style="margin:0 auto 14px;">🔑</div>
+    <h3 id="adminPinTitle">Masuk sebagai Admin</h3>
+    <p style="color:var(--muted);font-size:12.5px;margin:8px 0 16px;" id="adminPinDesc">Masukkan PIN Admin untuk membuka akses tambah/edit/hapus.</p>
+    <input type="password" id="adminPinInput" inputmode="numeric" maxlength="8" placeholder="••••"
+      style="width:100%;padding:14px;font-size:22px;letter-spacing:8px;text-align:center;background:var(--bg-alt);border:1px solid var(--border);border-radius:10px;color:var(--text);outline:none;">
+    <div id="adminPinError" style="color:var(--red);font-size:12px;margin-top:10px;min-height:16px;"></div>
+    <div class="modal-actions" style="justify-content:center;margin-top:6px;">
+      <button type="button" class="btn-ghost" id="cancelAdminPinBtn">Batal</button>
+      <button type="button" class="btn-primary" id="adminPinSubmitBtn">Masuk</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= UBAH PIN ADMIN MODAL ================= -->
 <div class="modal-overlay" id="pinManageOverlay">
   <div class="modal-box" style="max-width:400px;">
-    <h3>Kelola PIN User (Read-only)</h3>
+    <h3>Ubah PIN Admin</h3>
     <p style="color:var(--muted);font-size:12.5px;margin-bottom:16px;">
-      Buat atau ubah PIN untuk orang lain yang hanya boleh melihat data (tidak bisa tambah/edit/hapus).
+      Ganti PIN yang dipakai untuk masuk mode Admin (akses tambah/edit/hapus).
     </p>
     <div class="field" style="margin-bottom:12px;">
-      <label>PIN User Baru (4-8 digit)</label>
-      <input type="password" id="newUserPin" inputmode="numeric" maxlength="8" placeholder="••••">
+      <label>PIN Admin Baru (4-8 digit)</label>
+      <input type="password" id="newAdminPin" inputmode="numeric" maxlength="8" placeholder="••••">
     </div>
     <div id="pinManageError" style="color:var(--red);font-size:12px;min-height:16px;margin-bottom:6px;"></div>
     <div class="modal-actions">
-      <button type="button" class="btn-ghost" id="removeUserPinBtn">Hapus PIN User</button>
       <button type="button" class="btn-ghost" id="cancelPinManageBtn">Batal</button>
-      <button type="button" class="btn-primary" id="saveUserPinBtn">Simpan</button>
+      <button type="button" class="btn-primary" id="saveAdminPinBtn">Simpan</button>
     </div>
   </div>
 </div>
@@ -423,6 +426,7 @@
 const SUPABASE_URL = "https://ctxtkilkceninsvjqvxs.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_8lW88kfOjhFfvJ3nsE472g_d-x63Teu";
 const TABLE_NAME = "trading_accounts";
+const ADMIN_PIN_DEFAULT = "4223"; // PIN Admin bawaan — sama di semua device selama belum diubah lewat "Ubah PIN Admin"
 /* ========================================================================= */
 
 let sb = null;
@@ -655,26 +659,17 @@ document.getElementById('searchInput').addEventListener('input', render);
 document.getElementById('filterStatus').addEventListener('change', render);
 document.getElementById('filterType').addEventListener('change', render);
 
-/* ---------------- PIN LOCK (role: admin / user read-only) ---------------- */
+/* ---------------- ROLE: user (default, read-only) / admin (via PIN) ---------------- */
 const ADMIN_PIN_KEY = 'tt_admin_pin_hash';
-const USER_PIN_KEY = 'tt_user_pin_hash';
-const OLD_PIN_KEY = 'tt_pin_hash'; // migrasi dari versi lama (PIN tunggal)
+const OLD_PIN_KEY = 'tt_pin_hash';       // migrasi dari versi PIN tunggal lama
+const OLD_USER_PIN_KEY = 'tt_user_pin_hash'; // sudah tidak dipakai di versi ini
 
-const lockScreen = document.getElementById('lockScreen');
-const appEl = document.getElementById('app');
-const pinInput = document.getElementById('pinInput');
-const lockBtn = document.getElementById('lockBtn');
-const lockError = document.getElementById('lockError');
-const lockTitle = document.getElementById('lockTitle');
-const lockDesc = document.getElementById('lockDesc');
-
-// migrasi: kalau ada PIN lama (versi sebelum fitur role), jadikan itu PIN Admin
+// migrasi: kalau ada PIN lama, jadikan PIN Admin
 if(localStorage.getItem(OLD_PIN_KEY) && !localStorage.getItem(ADMIN_PIN_KEY)){
   localStorage.setItem(ADMIN_PIN_KEY, localStorage.getItem(OLD_PIN_KEY));
   localStorage.removeItem(OLD_PIN_KEY);
 }
-
-let lockStage = 'login'; // 'setup-admin' | 'login'
+localStorage.removeItem(OLD_USER_PIN_KEY);
 
 function simpleHash(str){
   let hash = 0;
@@ -685,129 +680,114 @@ function simpleHash(str){
   return hash.toString();
 }
 
-function hasAdminPin(){ return !!localStorage.getItem(ADMIN_PIN_KEY); }
-function hasUserPin(){ return !!localStorage.getItem(USER_PIN_KEY); }
-
-function setupLockUI(){
-  if(!hasAdminPin()){
-    lockStage = 'setup-admin';
-    lockTitle.textContent = 'Buat PIN Admin';
-    lockDesc.textContent = 'Belum ada PIN di perangkat ini. Buat PIN Admin (4-8 digit) — akun ini punya akses penuh (tambah/edit/hapus).';
-    lockBtn.textContent = 'Simpan PIN Admin & Masuk';
-  } else {
-    lockStage = 'login';
-    lockTitle.textContent = 'Masuk';
-    lockDesc.textContent = 'Masukkan PIN Anda (Admin atau User).';
-    lockBtn.textContent = 'Buka';
-  }
+function hasAdminPin(){ return true; } // selalu ada — minimal PIN default dari ADMIN_PIN_DEFAULT
+function getAdminPinHash(){
+  const override = localStorage.getItem(ADMIN_PIN_KEY);
+  return override || simpleHash(ADMIN_PIN_DEFAULT);
 }
+function currentRole(){ return sessionStorage.getItem('tt_role') === 'admin' ? 'admin' : 'user'; }
 
-function updateRoleUI(role){
+function updateRoleUI(){
+  const role = currentRole();
   const badge = document.getElementById('roleBadge');
   const banner = document.getElementById('readonlyBanner');
-  const manageBtn = document.getElementById('managePinBtn');
   const addBtn = document.getElementById('addBtn');
+  const loginBtn = document.getElementById('adminLoginBtn');
+  const logoutBtn = document.getElementById('adminLogoutBtn');
+  const changePinBtn = document.getElementById('changeAdminPinBtn');
   if(role === 'admin'){
     badge.textContent = '🛡 Admin';
     badge.className = 'role-badge role-admin';
     banner.style.display = 'none';
-    manageBtn.style.display = 'inline-block';
     addBtn.style.display = 'inline-block';
+    loginBtn.style.display = 'none';
+    logoutBtn.style.display = 'inline-block';
+    changePinBtn.style.display = 'inline-block';
   } else {
     badge.textContent = '👁 User (Read-only)';
     badge.className = 'role-badge role-user';
     banner.style.display = 'flex';
-    manageBtn.style.display = 'none';
     addBtn.style.display = 'none';
+    loginBtn.style.display = 'inline-block';
+    logoutBtn.style.display = 'none';
+    changePinBtn.style.display = 'none';
   }
+  render();
 }
 
-function unlockApp(role){
-  lockScreen.style.display = 'none';
-  appEl.style.display = 'block';
-  sessionStorage.setItem('tt_unlocked', '1');
-  sessionStorage.setItem('tt_role', role);
-  updateRoleUI(role);
-  initSupabase();
+/* ---- Modal: Masuk sebagai Admin ---- */
+const adminPinOverlay = document.getElementById('adminPinOverlay');
+const adminPinInput = document.getElementById('adminPinInput');
+const adminPinTitle = document.getElementById('adminPinTitle');
+const adminPinDesc = document.getElementById('adminPinDesc');
+const adminPinError = document.getElementById('adminPinError');
+const adminPinSubmitBtn = document.getElementById('adminPinSubmitBtn');
+
+function openAdminPinModal(){
+  adminPinInput.value = '';
+  adminPinError.textContent = '';
+  adminPinTitle.textContent = 'Masuk sebagai Admin';
+  adminPinDesc.textContent = 'Masukkan PIN Admin untuk membuka akses tambah/edit/hapus.';
+  adminPinSubmitBtn.textContent = 'Masuk';
+  adminPinOverlay.style.display = 'flex';
+  adminPinInput.focus();
 }
 
-function handleLockSubmit(){
-  const val = pinInput.value.trim();
-  lockError.textContent = '';
+document.getElementById('adminLoginBtn').addEventListener('click', openAdminPinModal);
+document.getElementById('cancelAdminPinBtn').addEventListener('click', () => { adminPinOverlay.style.display = 'none'; });
+adminPinOverlay.addEventListener('click', (e) => { if(e.target === adminPinOverlay) adminPinOverlay.style.display = 'none'; });
+
+function handleAdminPinSubmit(){
+  const val = adminPinInput.value.trim();
+  adminPinError.textContent = '';
   if(val.length < 4){
-    lockError.textContent = 'PIN minimal 4 digit.';
+    adminPinError.textContent = 'PIN minimal 4 digit.';
     return;
   }
-  if(lockStage === 'setup-admin'){
-    localStorage.setItem(ADMIN_PIN_KEY, simpleHash(val));
-    unlockApp('admin');
-    return;
-  }
-  // stage login: cocokkan ke PIN Admin dulu, lalu PIN User
-  const hashed = simpleHash(val);
-  if(hashed === localStorage.getItem(ADMIN_PIN_KEY)){
-    unlockApp('admin');
-  } else if(hasUserPin() && hashed === localStorage.getItem(USER_PIN_KEY)){
-    unlockApp('user');
+  if(simpleHash(val) === getAdminPinHash()){
+    sessionStorage.setItem('tt_role', 'admin');
+    adminPinOverlay.style.display = 'none';
+    updateRoleUI();
   } else {
-    lockError.textContent = 'PIN salah. Coba lagi.';
-    pinInput.value = '';
+    adminPinError.textContent = 'PIN salah. Coba lagi.';
+    adminPinInput.value = '';
   }
 }
+adminPinSubmitBtn.addEventListener('click', handleAdminPinSubmit);
+adminPinInput.addEventListener('keydown', (e) => { if(e.key === 'Enter') handleAdminPinSubmit(); });
 
-lockBtn.addEventListener('click', handleLockSubmit);
-pinInput.addEventListener('keydown', (e) => { if(e.key === 'Enter') handleLockSubmit(); });
-
-document.getElementById('relockBtn').addEventListener('click', () => {
-  sessionStorage.removeItem('tt_unlocked');
+document.getElementById('adminLogoutBtn').addEventListener('click', () => {
   sessionStorage.removeItem('tt_role');
-  location.reload();
+  updateRoleUI();
 });
 
-/* ---------------- Kelola PIN User (khusus admin) ---------------- */
+/* ---- Modal: Ubah PIN Admin (hanya saat sudah masuk sebagai admin) ---- */
 const pinManageOverlay = document.getElementById('pinManageOverlay');
-const newUserPinInput = document.getElementById('newUserPin');
+const newAdminPinInput = document.getElementById('newAdminPin');
 const pinManageError = document.getElementById('pinManageError');
 
-document.getElementById('managePinBtn').addEventListener('click', () => {
-  newUserPinInput.value = '';
+document.getElementById('changeAdminPinBtn').addEventListener('click', () => {
+  newAdminPinInput.value = '';
   pinManageError.textContent = '';
   pinManageOverlay.style.display = 'flex';
 });
-document.getElementById('cancelPinManageBtn').addEventListener('click', () => {
-  pinManageOverlay.style.display = 'none';
-});
+document.getElementById('cancelPinManageBtn').addEventListener('click', () => { pinManageOverlay.style.display = 'none'; });
 pinManageOverlay.addEventListener('click', (e) => { if(e.target === pinManageOverlay) pinManageOverlay.style.display = 'none'; });
 
-document.getElementById('saveUserPinBtn').addEventListener('click', () => {
-  const val = newUserPinInput.value.trim();
+document.getElementById('saveAdminPinBtn').addEventListener('click', () => {
+  const val = newAdminPinInput.value.trim();
   if(val.length < 4){
     pinManageError.textContent = 'PIN minimal 4 digit.';
     return;
   }
-  if(val.length > 0 && simpleHash(val) === localStorage.getItem(ADMIN_PIN_KEY)){
-    pinManageError.textContent = 'PIN User tidak boleh sama dengan PIN Admin.';
-    return;
-  }
-  localStorage.setItem(USER_PIN_KEY, simpleHash(val));
+  localStorage.setItem(ADMIN_PIN_KEY, simpleHash(val));
   pinManageOverlay.style.display = 'none';
-  alert('PIN User berhasil disimpan. Bagikan PIN ini ke orang yang hanya boleh melihat data.');
+  alert('PIN Admin berhasil diubah.');
 });
 
-document.getElementById('removeUserPinBtn').addEventListener('click', () => {
-  if(!hasUserPin()){ pinManageOverlay.style.display = 'none'; return; }
-  if(confirm('Hapus PIN User? Orang dengan PIN User tidak akan bisa masuk lagi.')){
-    localStorage.removeItem(USER_PIN_KEY);
-    pinManageOverlay.style.display = 'none';
-  }
-});
-
-/* boot */
-setupLockUI();
-if(sessionStorage.getItem('tt_unlocked') === '1'){
-  unlockApp(sessionStorage.getItem('tt_role') || 'admin');
-}
-pinInput.focus();
+/* boot: konten selalu tampil sebagai User (read-only) secara default */
+updateRoleUI();
+initSupabase();
 </script>
 </body>
 </html>
