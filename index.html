@@ -5,235 +5,265 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Trading Account Tracker</title>
 <style>
-  :root{
-    --bg:#0a0e14;
-    --bg-alt:#0f151f;
-    --card:#131a25;
-    --card-hover:#161e2b;
-    --border:#22303f;
-    --text:#e6edf3;
-    --muted:#8b98a9;
-    --accent:#22d3ee;
-    --accent-dim:#0e7490;
-    --green:#22c55e;
-    --green-bg:rgba(34,197,94,0.14);
-    --red:#f87171;
-    --red-bg:rgba(248,113,113,0.14);
-    --blue:#60a5fa;
-    --blue-bg:rgba(96,165,250,0.14);
-    --yellow:#facc15;
-    --yellow-bg:rgba(250,204,21,0.14);
-    --radius:14px;
-    --shadow:0 4px 24px rgba(0,0,0,0.35);
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+  :root {
+    --bg: #07090e;
+    --bg-alt: #0d1117;
+    --card: #121824;
+    --card-hover: #172030;
+    --border: #1e293b;
+    --border-focus: #38bdf8;
+    --text: #f1f5f9;
+    --muted: #64748b;
+    --accent: #38bdf8;
+    --accent-dim: #0284c7;
+    --green: #10b981;
+    --green-bg: rgba(16, 185, 129, 0.12);
+    --green-border: rgba(16, 185, 129, 0.25);
+    --red: #f43f5e;
+    --red-bg: rgba(244, 63, 94, 0.12);
+    --red-border: rgba(244, 63, 94, 0.25);
+    --blue: #60a5fa;
+    --blue-bg: rgba(96, 165, 250, 0.12);
+    --yellow: #f59e0b;
+    --yellow-bg: rgba(245, 158, 11, 0.12);
+    --radius: 16px;
+    --shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.5);
   }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{
-    background:radial-gradient(1200px 600px at 20% -10%, #0d2233 0%, var(--bg) 55%), var(--bg);
-    color:var(--text);
-    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Inter,Arial,sans-serif;
-    min-height:100vh;
-    -webkit-font-smoothing:antialiased;
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  body {
+    background: radial-gradient(circle at 50% 0%, #0f172a 0%, var(--bg) 70%);
+    color: var(--text);
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.01em;
   }
-  ::selection{background:var(--accent-dim);}
-  a{color:var(--accent);}
+
+  ::selection { background: rgba(56, 189, 248, 0.2); color: var(--accent); }
+  a { color: var(--accent); text-decoration: none; }
 
   /* ---------- PIN LOCK ---------- */
-  #lockScreen{
-    position:fixed;inset:0;z-index:999;
-    background:var(--bg);
-    display:flex;align-items:center;justify-content:center;
-    flex-direction:column;gap:18px;padding:24px;
+  #lockScreen {
+    position: fixed; inset: 0; z-index: 999;
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 18px; padding: 24px;
   }
-  .lock-box{
-    background:var(--card);border:1px solid var(--border);
-    border-radius:var(--radius);padding:32px 28px;
-    width:100%;max-width:360px;box-shadow:var(--shadow);
-    text-align:center;
+  .lock-box {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 36px 30px;
+    width: 100%; max-width: 380px; box-shadow: var(--shadow);
+    text-align: center;
   }
-  .lock-icon{
-    width:52px;height:52px;border-radius:50%;
-    background:var(--blue-bg);color:var(--accent);
-    display:flex;align-items:center;justify-content:center;
-    margin:0 auto 14px;font-size:24px;
+  .lock-icon {
+    width: 56px; height: 56px; border-radius: 14px;
+    background: var(--blue-bg); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px; font-size: 26px; border: 1px solid rgba(56, 189, 248, 0.2);
   }
-  .lock-box h2{font-size:18px;margin-bottom:6px;}
-  .lock-box p{color:var(--muted);font-size:13px;margin-bottom:20px;}
-  #pinInput{
-    width:100%;padding:14px;font-size:22px;letter-spacing:8px;
-    text-align:center;background:var(--bg-alt);border:1px solid var(--border);
-    border-radius:10px;color:var(--text);outline:none;
+  .lock-box h2 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+  .lock-box p { color: var(--muted); font-size: 13px; margin-bottom: 22px; }
+  #pinInput {
+    width: 100%; padding: 14px; font-size: 24px; letter-spacing: 10px;
+    text-align: center; background: var(--bg-alt); border: 1px solid var(--border);
+    border-radius: 12px; color: var(--text); outline: none; transition: 0.2s;
   }
-  #pinInput:focus{border-color:var(--accent);}
-  .lock-btn{
-    margin-top:14px;width:100%;padding:12px;border:none;border-radius:10px;
-    background:var(--accent);color:#00252c;font-weight:600;font-size:14px;
-    cursor:pointer;transition:.15s;
+  #pinInput:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15); }
+  .lock-btn {
+    margin-top: 16px; width: 100%; padding: 13px; border: none; border-radius: 12px;
+    background: var(--accent); color: #03131a; font-weight: 700; font-size: 14px;
+    cursor: pointer; transition: .2s;
   }
-  .lock-btn:hover{filter:brightness(1.1);}
-  #lockError{color:var(--red);font-size:12px;margin-top:10px;min-height:16px;}
-  .lock-hint{color:var(--muted);font-size:11px;margin-top:14px;}
+  .lock-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+  #lockError { color: var(--red); font-size: 12px; margin-top: 10px; min-height: 16px; font-weight: 500; }
+  .lock-hint { color: var(--muted); font-size: 11px; margin-top: 14px; }
 
   /* ---------- LAYOUT ---------- */
-  #app{display:block;max-width:1200px;margin:0 auto;padding:18px 16px 60px;}
-  header.topbar{
-    display:flex;align-items:center;justify-content:space-between;
-    gap:12px;margin-bottom:20px;flex-wrap:wrap;
+  #app { display: block; max-width: 1240px; margin: 0 auto; padding: 24px 20px 60px; }
+  
+  header.topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; margin-bottom: 28px; flex-wrap: wrap;
+    background: rgba(18, 24, 36, 0.6); backdrop-filter: blur(12px);
+    padding: 16px 20px; border-radius: var(--radius); border: 1px solid var(--border);
   }
-  .brand{display:flex;align-items:center;gap:10px;}
-  .brand-logo{
-    width:36px;height:36px;border-radius:10px;
-    background:linear-gradient(135deg,var(--accent),#0891b2);
-    display:flex;align-items:center;justify-content:center;font-size:18px;
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-logo {
+    width: 42px; height: 42px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent), #0284c7);
+    display: flex; align-items: center; justify-content: center; font-size: 20px;
+    box-shadow: 0 4px 14px rgba(56, 189, 248, 0.3);
   }
-  .brand h1{font-size:16px;font-weight:600;}
-  .brand span{color:var(--muted);font-size:11px;display:block;}
+  .brand h1 { font-size: 18px; font-weight: 800; letter-spacing: -0.02em; }
+  .brand span { color: var(--muted); font-size: 12px; font-weight: 500; display: block; margin-top: 1px; }
 
-  #syncStatus{
-    display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);
-    background:var(--card);border:1px solid var(--border);padding:6px 12px;border-radius:20px;
+  #syncStatus {
+    display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: var(--muted);
+    background: var(--bg-alt); border: 1px solid var(--border); padding: 7px 14px; border-radius: 30px;
   }
-  .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);}
-  .dot.off{background:var(--red);box-shadow:0 0 8px var(--red);}
-  .dot.pending{background:var(--yellow);box-shadow:0 0 8px var(--yellow);}
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px var(--green); }
+  .dot.off { background: var(--red); box-shadow: 0 0 10px var(--red); }
+  .dot.pending { background: var(--yellow); box-shadow: 0 0 10px var(--yellow); }
 
-  .lock-toggle{
-    background:transparent;border:1px solid var(--border);color:var(--muted);
-    padding:6px 10px;border-radius:8px;font-size:12px;cursor:pointer;
+  .lock-toggle {
+    background: var(--bg-alt); border: 1px solid var(--border); color: var(--text);
+    padding: 8px 14px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s;
   }
-  .lock-toggle:hover{color:var(--text);border-color:var(--accent);}
+  .lock-toggle:hover { border-color: var(--accent); color: var(--accent); }
 
-  .role-badge{
-    display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;
-    padding:6px 12px;border-radius:20px;border:1px solid var(--border);
+  .role-badge {
+    display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700;
+    padding: 7px 14px; border-radius: 30px; border: 1px solid var(--border);
   }
-  .role-badge.role-admin{color:var(--accent);border-color:var(--accent-dim);background:var(--blue-bg);}
-  .role-badge.role-user{color:var(--muted);}
-  .readonly-banner{
-    background:var(--yellow-bg);color:var(--yellow);border:1px solid rgba(250,204,21,0.3);
-    border-radius:10px;padding:9px 14px;font-size:12.5px;margin-bottom:16px;
-    display:flex;align-items:center;gap:8px;
+  .role-badge.role-admin { color: var(--accent); border-color: rgba(56, 189, 248, 0.3); background: var(--blue-bg); }
+  .role-badge.role-user { color: var(--muted); background: var(--bg-alt); }
+  
+  .readonly-banner {
+    background: var(--yellow-bg); color: var(--yellow); border: 1px solid rgba(245, 158, 11, 0.25);
+    border-radius: 12px; padding: 12px 18px; font-size: 13px; font-weight: 500; margin-bottom: 20px;
+    display: flex; align-items: center; gap: 10px;
   }
 
-  /* summary cards */
-  .summary-grid{
-    display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;
+  /* Summary Cards */
+  .summary-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px;
   }
-  .sum-card{
-    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
-    padding:16px 18px;position:relative;overflow:hidden;
+  .sum-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 20px 22px; position: relative; overflow: hidden; transition: 0.2s;
   }
-  .sum-card::before{
-    content:'';position:absolute;top:-30%;right:-20%;width:100px;height:100px;
-    border-radius:50%;background:radial-gradient(circle,var(--accent-dim) 0%,transparent 70%);opacity:.35;
+  .sum-card:hover { border-color: rgba(255, 255, 255, 0.1); transform: translateY(-2px); }
+  .sum-card::before {
+    content: ''; position: absolute; top: 0; right: 0; width: 120px; height: 120px;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.08) 0%, transparent 70%);
+    pointer-events: none;
   }
-  .sum-label{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;}
-  .sum-value{font-size:22px;font-weight:700;}
-  .sum-value.pos{color:var(--green);}
-  .sum-value.neg{color:var(--red);}
-  .sum-sub{font-size:11px;color:var(--muted);margin-top:4px;}
+  .sum-label { color: var(--muted); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; }
+  .sum-value { font-size: 26px; font-weight: 800; letter-spacing: -0.03em; }
+  .sum-value.pos { color: var(--green); }
+  .sum-value.neg { color: var(--red); }
+  .sum-sub { font-size: 12px; font-weight: 600; color: var(--muted); margin-top: 6px; }
 
-  /* toolbar */
-  .toolbar{
-    display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center;
+  /* Toolbar */
+  .toolbar {
+    display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;
   }
-  .toolbar input[type=text], .toolbar select{
-    background:var(--card);border:1px solid var(--border);color:var(--text);
-    padding:10px 12px;border-radius:10px;font-size:13px;outline:none;
+  .toolbar input[type=text], .toolbar select {
+    background: var(--card); border: 1px solid var(--border); color: var(--text);
+    padding: 12px 16px; border-radius: 12px; font-size: 13.5px; font-weight: 500; outline: none; transition: 0.2s;
   }
-  .toolbar input[type=text]{flex:1;min-width:180px;}
-  .toolbar input[type=text]:focus, .toolbar select:focus{border-color:var(--accent);}
-  .btn-primary{
-    background:var(--accent);color:#00252c;border:none;padding:10px 16px;
-    border-radius:10px;font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap;
+  .toolbar input[type=text] { flex: 1; min-width: 220px; }
+  .toolbar input[type=text]:focus, .toolbar select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1); }
+  
+  .btn-primary {
+    background: var(--accent); color: #03131a; border: none; padding: 12px 20px;
+    border-radius: 12px; font-weight: 700; font-size: 13.5px; cursor: pointer; white-space: nowrap; transition: 0.2s;
+    box-shadow: 0 4px 12px rgba(56, 189, 248, 0.25);
   }
-  .btn-primary:hover{filter:brightness(1.1);}
+  .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
 
-  /* table */
-  .table-wrap{
-    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
-    overflow:hidden;
+  /* Table */
+  .table-wrap {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; box-shadow: var(--shadow);
   }
-  table{width:100%;border-collapse:collapse;}
-  thead th{
-    text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.04em;
-    color:var(--muted);padding:12px 14px;border-bottom:1px solid var(--border);
-    background:var(--bg-alt);
+  table { width: 100%; border-collapse: collapse; text-align: left; }
+  thead th {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--muted); padding: 16px 18px; border-bottom: 1px solid var(--border);
+    background: var(--bg-alt);
   }
-  tbody td{
-    padding:13px 14px;font-size:13.5px;border-bottom:1px solid var(--border);
-    vertical-align:middle;
+  tbody td {
+    padding: 16px 18px; font-size: 14px; border-bottom: 1px solid var(--border);
+    vertical-align: middle; transition: 0.15s;
   }
-  tbody tr:last-child td{border-bottom:none;}
-  tbody tr:hover{background:var(--card-hover);}
-  .provider-cell{font-weight:600;}
-  .provider-sub{color:var(--muted);font-size:11px;margin-top:2px;}
-  .badge{
-    display:inline-block;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: var(--card-hover); }
+  
+  .provider-cell { font-weight: 700; color: var(--text); font-size: 14.5px; }
+  .provider-sub { color: var(--muted); font-size: 12px; font-weight: 500; margin-top: 2px; }
+  
+  .badge {
+    display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 20px; font-size: 11.5px; font-weight: 700;
   }
-  .badge-active{background:var(--green-bg);color:var(--green);}
-  .badge-passed{background:var(--blue-bg);color:var(--blue);}
-  .badge-failed{background:var(--red-bg);color:var(--red);}
-  .badge-onhold{background:var(--yellow-bg);color:var(--yellow);}
-  .type-tag{color:var(--muted);font-size:11.5px;}
-  .pl-pos{color:var(--green);font-weight:600;}
-  .pl-neg{color:var(--red);font-weight:600;}
-  .row-actions{display:flex;gap:6px;}
-  .icon-btn{
-    background:transparent;border:1px solid var(--border);color:var(--muted);
-    width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:13px;
-    display:flex;align-items:center;justify-content:center;
+  .badge-active { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+  .badge-passed { background: var(--blue-bg); color: var(--blue); border: 1px solid rgba(96, 165, 250, 0.25); }
+  .badge-failed { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+  .badge-onhold { background: var(--yellow-bg); color: var(--yellow); border: 1px solid rgba(245, 158, 11, 0.25); }
+  
+  .type-tag {
+    background: var(--bg-alt); border: 1px solid var(--border); color: var(--text);
+    padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 600;
   }
-  .icon-btn:hover{color:var(--text);border-color:var(--accent);}
-  .icon-btn.del:hover{color:var(--red);border-color:var(--red);}
-  .empty-state{padding:50px 20px;text-align:center;color:var(--muted);}
+  .pl-pos { color: var(--green); font-weight: 700; }
+  .pl-neg { color: var(--red); font-weight: 700; }
+  
+  .row-actions { display: flex; gap: 8px; }
+  .icon-btn {
+    background: var(--bg-alt); border: 1px solid var(--border); color: var(--muted);
+    width: 34px; height: 34px; border-radius: 10px; cursor: pointer; font-size: 14px;
+    display: flex; align-items: center; justify-content: center; transition: 0.2s;
+  }
+  .icon-btn:hover { color: var(--text); border-color: var(--accent); background: var(--card); }
+  .icon-btn.del:hover { color: var(--red); border-color: var(--red); background: var(--red-bg); }
+  .empty-state { padding: 60px 20px; text-align: center; color: var(--muted); font-weight: 500; font-size: 14px; }
 
-  /* modal */
-  .modal-overlay{
-    position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(2px);
-    display:none;align-items:center;justify-content:center;z-index:500;padding:16px;
+  /* Modal */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(6px);
+    display: none; align-items: center; justify-content: center; z-index: 500; padding: 20px;
   }
-  .modal-box{
-    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
-    width:100%;max-width:520px;max-height:90vh;overflow-y:auto;padding:22px;box-shadow:var(--shadow);
+  .modal-box {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    width: 100%; max-width: 540px; max-height: 90vh; overflow-y: auto; padding: 28px; box-shadow: var(--shadow);
   }
-  .modal-box h3{font-size:16px;margin-bottom:16px;}
-  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-  .form-grid .full{grid-column:1/-1;}
-  .field label{font-size:11.5px;color:var(--muted);display:block;margin-bottom:5px;}
-  .field input, .field select, .field textarea{
-    width:100%;background:var(--bg-alt);border:1px solid var(--border);color:var(--text);
-    padding:9px 11px;border-radius:8px;font-size:13.5px;outline:none;font-family:inherit;
+  .modal-box h3 { font-size: 18px; font-weight: 800; margin-bottom: 20px; letter-spacing: -0.01em; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-grid .full { grid-column: 1/-1; }
+  .field label { font-size: 12px; font-weight: 600; color: var(--muted); display: block; margin-bottom: 6px; }
+  .field input, .field select, .field textarea {
+    width: 100%; background: var(--bg-alt); border: 1px solid var(--border); color: var(--text);
+    padding: 11px 14px; border-radius: 10px; font-size: 13.5px; font-weight: 500; outline: none; font-family: inherit; transition: 0.2s;
   }
-  .field input:focus, .field select:focus, .field textarea:focus{border-color:var(--accent);}
-  .field textarea{resize:vertical;min-height:60px;}
-  .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;}
-  .btn-ghost{
-    background:transparent;border:1px solid var(--border);color:var(--muted);
-    padding:10px 16px;border-radius:10px;font-size:13px;cursor:pointer;
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1); }
+  .field textarea { resize: vertical; min-height: 70px; }
+  
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
+  .btn-ghost {
+    background: transparent; border: 1px solid var(--border); color: var(--muted);
+    padding: 12px 18px; border-radius: 10px; font-size: 13.5px; font-weight: 600; cursor: pointer; transition: 0.2s;
   }
-  .btn-ghost:hover{color:var(--text);}
+  .btn-ghost:hover { color: var(--text); border-color: rgba(255, 255, 255, 0.2); }
 
-  /* mobile card layout */
-  @media (max-width:760px){
-    .summary-grid{grid-template-columns:1fr 1fr;}
-    thead{display:none;}
-    table, tbody, tr, td{display:block;width:100%;}
-    tbody tr{
-      border-bottom:1px solid var(--border);padding:12px 14px;
+  /* Mobile Responsive Card Layout */
+  @media (max-width: 768px) {
+    #app { padding: 16px 12px 40px; }
+    .summary-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .sum-card { padding: 16px; }
+    .sum-value { font-size: 20px; }
+    thead { display: none; }
+    table, tbody, tr, td { display: block; width: 100%; }
+    tbody tr {
+      border-bottom: 1px solid var(--border); padding: 16px;
+      background: var(--card); margin-bottom: 10px; border-radius: 12px; border: 1px solid var(--border);
     }
-    tbody td{
-      border:none;padding:6px 0;display:flex;justify-content:space-between;gap:10px;
-      font-size:13px;
+    tbody td {
+      border: none; padding: 6px 0; display: flex; justify-content: space-between; align-items: center; gap: 10px;
+      font-size: 13.5px;
     }
-    tbody td::before{
-      content:attr(data-label);color:var(--muted);font-size:11px;font-weight:600;
-      text-transform:uppercase;letter-spacing:.03em;flex-shrink:0;
+    tbody td::before {
+      content: attr(data-label); color: var(--muted); font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.05em; flex-shrink: 0;
     }
-    .row-actions{justify-content:flex-end;}
-    .form-grid{grid-template-columns:1fr;}
+    .row-actions { justify-content: flex-end; width: 100%; margin-top: 4px; }
+    .form-grid { grid-template-columns: 1fr; }
   }
-  @media (max-width:420px){
-    .summary-grid{grid-template-columns:1fr;}
+  @media (max-width: 420px) {
+    .summary-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -387,8 +417,7 @@
     <div class="lock-icon" style="margin:0 auto 14px;">🔑</div>
     <h3 id="adminPinTitle">Masuk sebagai Admin</h3>
     <p style="color:var(--muted);font-size:12.5px;margin:8px 0 16px;" id="adminPinDesc">Masukkan PIN Admin untuk membuka akses tambah/edit/hapus.</p>
-    <input type="password" id="adminPinInput" inputmode="numeric" maxlength="8" placeholder="••••"
-      style="width:100%;padding:14px;font-size:22px;letter-spacing:8px;text-align:center;background:var(--bg-alt);border:1px solid var(--border);border-radius:10px;color:var(--text);outline:none;">
+    <input type="password" id="adminPinInput" inputmode="numeric" maxlength="8" placeholder="••••">
     <div id="adminPinError" style="color:var(--red);font-size:12px;margin-top:10px;min-height:16px;"></div>
     <div class="modal-actions" style="justify-content:center;margin-top:6px;">
       <button type="button" class="btn-ghost" id="cancelAdminPinBtn">Batal</button>
@@ -420,13 +449,12 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* =========================================================================
-   KONFIGURASI SUPABASE — GANTI DUA NILAI DI BAWAH INI
-   Lihat petunjuk lengkap dari Claude untuk cara mendapatkan nilai ini.
+   KONFIGURASI SUPABASE
    ========================================================================= */
 const SUPABASE_URL = "https://ctxtkilkceninsvjqvxs.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_8lW88kfOjhFfvJ3nsE472g_d-x63Teu";
 const TABLE_NAME = "trading_accounts";
-const ADMIN_PIN_DEFAULT = "4223"; // PIN Admin bawaan — sama di semua device selama belum diubah lewat "Ubah PIN Admin"
+const ADMIN_PIN_DEFAULT = "4223"; // PIN Admin bawaan
 /* ========================================================================= */
 
 let sb = null;
@@ -659,12 +687,11 @@ document.getElementById('searchInput').addEventListener('input', render);
 document.getElementById('filterStatus').addEventListener('change', render);
 document.getElementById('filterType').addEventListener('change', render);
 
-/* ---------------- ROLE: user (default, read-only) / admin (via PIN) ---------------- */
+/* ---------------- ROLE: user / admin ---------------- */
 const ADMIN_PIN_KEY = 'tt_admin_pin_hash';
-const OLD_PIN_KEY = 'tt_pin_hash';       // migrasi dari versi PIN tunggal lama
-const OLD_USER_PIN_KEY = 'tt_user_pin_hash'; // sudah tidak dipakai di versi ini
+const OLD_PIN_KEY = 'tt_pin_hash';        
+const OLD_USER_PIN_KEY = 'tt_user_pin_hash';
 
-// migrasi: kalau ada PIN lama, jadikan PIN Admin
 if(localStorage.getItem(OLD_PIN_KEY) && !localStorage.getItem(ADMIN_PIN_KEY)){
   localStorage.setItem(ADMIN_PIN_KEY, localStorage.getItem(OLD_PIN_KEY));
   localStorage.removeItem(OLD_PIN_KEY);
@@ -680,7 +707,7 @@ function simpleHash(str){
   return hash.toString();
 }
 
-function hasAdminPin(){ return true; } // selalu ada — minimal PIN default dari ADMIN_PIN_DEFAULT
+function hasAdminPin(){ return true; }
 function getAdminPinHash(){
   const override = localStorage.getItem(ADMIN_PIN_KEY);
   return override || simpleHash(ADMIN_PIN_DEFAULT);
@@ -761,7 +788,7 @@ document.getElementById('adminLogoutBtn').addEventListener('click', () => {
   updateRoleUI();
 });
 
-/* ---- Modal: Ubah PIN Admin (hanya saat sudah masuk sebagai admin) ---- */
+/* ---- Modal: Ubah PIN Admin ---- */
 const pinManageOverlay = document.getElementById('pinManageOverlay');
 const newAdminPinInput = document.getElementById('newAdminPin');
 const pinManageError = document.getElementById('pinManageError');
@@ -785,7 +812,7 @@ document.getElementById('saveAdminPinBtn').addEventListener('click', () => {
   alert('PIN Admin berhasil diubah.');
 });
 
-/* boot: konten selalu tampil sebagai User (read-only) secara default */
+/* Boot */
 updateRoleUI();
 initSupabase();
 </script>
