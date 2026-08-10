@@ -5,424 +5,424 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Trading Account Tracker</title>
 <style>
-  :root{
-    --bg:#0a0e14;
-    --bg-alt:#0f151f;
-    --card:#131a25;
-    --card-hover:#161e2b;
-    --border:#22303f;
-    --text:#e6edf3;
-    --muted:#8b98a9;
-    --accent:#22d3ee;
-    --accent-dim:#0e7490;
-    --green:#22c55e;
-    --green-bg:rgba(34,197,94,0.14);
-    --red:#f87171;
-    --red-bg:rgba(248,113,113,0.14);
-    --blue:#60a5fa;
-    --blue-bg:rgba(96,165,250,0.14);
-    --yellow:#facc15;
-    --yellow-bg:rgba(250,204,21,0.14);
-    --radius:14px;
-    --shadow:0 4px 24px rgba(0,0,0,0.35);
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{
-    background:radial-gradient(1200px 600px at 20% -10%, #0d2233 0%, var(--bg) 55%), var(--bg);
-    color:var(--text);
-    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Inter,Arial,sans-serif;
-    min-height:100vh;
-    -webkit-font-smoothing:antialiased;
-  }
-  ::selection{background:var(--accent-dim);}
-  a{color:var(--accent);}
+  :root{
+    --bg:#0a0e14;
+    --bg-alt:#0f151f;
+    --card:#131a25;
+    --card-hover:#161e2b;
+    --border:#22303f;
+    --text:#e6edf3;
+    --muted:#8b98a9;
+    --accent:#22d3ee;
+    --accent-dim:#0e7490;
+    --green:#22c55e;
+    --green-bg:rgba(34,197,94,0.14);
+    --red:#f87171;
+    --red-bg:rgba(248,113,113,0.14);
+    --blue:#60a5fa;
+    --blue-bg:rgba(96,165,250,0.14);
+    --yellow:#facc15;
+    --yellow-bg:rgba(250,204,21,0.14);
+    --radius:14px;
+    --shadow:0 4px 24px rgba(0,0,0,0.35);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:radial-gradient(1200px 600px at 20% -10%, #0d2233 0%, var(--bg) 55%), var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Inter,Arial,sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--accent-dim);}
+  a{color:var(--accent);}
 
-  /* ---------- PIN LOCK ---------- */
-  #lockScreen{
-    position:fixed;inset:0;z-index:999;
-    background:var(--bg);
-    display:flex;align-items:center;justify-content:center;
-    flex-direction:column;gap:18px;padding:24px;
-  }
-  .lock-box{
-    background:var(--card);border:1px solid var(--border);
-    border-radius:var(--radius);padding:32px 28px;
-    width:100%;max-width:360px;box-shadow:var(--shadow);
-    text-align:center;
-  }
-  .lock-icon{
-    width:52px;height:52px;border-radius:50%;
-    background:var(--blue-bg);color:var(--accent);
-    display:flex;align-items:center;justify-content:center;
-    margin:0 auto 14px;font-size:24px;
-  }
-  .lock-box h2{font-size:18px;margin-bottom:6px;}
-  .lock-box p{color:var(--muted);font-size:13px;margin-bottom:20px;}
-  #pinInput{
-    width:100%;padding:14px;font-size:22px;letter-spacing:8px;
-    text-align:center;background:var(--bg-alt);border:1px solid var(--border);
-    border-radius:10px;color:var(--text);outline:none;
-  }
-  #pinInput:focus{border-color:var(--accent);}
-  .lock-btn{
-    margin-top:14px;width:100%;padding:12px;border:none;border-radius:10px;
-    background:var(--accent);color:#00252c;font-weight:600;font-size:14px;
-    cursor:pointer;transition:.15s;
-  }
-  .lock-btn:hover{filter:brightness(1.1);}
-  #lockError{color:var(--red);font-size:12px;margin-top:10px;min-height:16px;}
-  .lock-hint{color:var(--muted);font-size:11px;margin-top:14px;}
+  /* ---------- PIN LOCK ---------- */
+  #lockScreen{
+    position:fixed;inset:0;z-index:999;
+    background:var(--bg);
+    display:flex;align-items:center;justify-content:center;
+    flex-direction:column;gap:18px;padding:24px;
+  }
+  .lock-box{
+    background:var(--card);border:1px solid var(--border);
+    border-radius:var(--radius);padding:32px 28px;
+    width:100%;max-width:360px;box-shadow:var(--shadow);
+    text-align:center;
+  }
+  .lock-icon{
+    width:52px;height:52px;border-radius:50%;
+    background:var(--blue-bg);color:var(--accent);
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 14px;font-size:24px;
+  }
+  .lock-box h2{font-size:18px;margin-bottom:6px;}
+  .lock-box p{color:var(--muted);font-size:13px;margin-bottom:20px;}
+  #pinInput{
+    width:100%;padding:14px;font-size:22px;letter-spacing:8px;
+    text-align:center;background:var(--bg-alt);border:1px solid var(--border);
+    border-radius:10px;color:var(--text);outline:none;
+  }
+  #pinInput:focus{border-color:var(--accent);}
+  .lock-btn{
+    margin-top:14px;width:100%;padding:12px;border:none;border-radius:10px;
+    background:var(--accent);color:#00252c;font-weight:600;font-size:14px;
+    cursor:pointer;transition:.15s;
+  }
+  .lock-btn:hover{filter:brightness(1.1);}
+  #lockError{color:var(--red);font-size:12px;margin-top:10px;min-height:16px;}
+  .lock-hint{color:var(--muted);font-size:11px;margin-top:14px;}
 
-  /* ---------- LAYOUT ---------- */
-  #app{display:block;max-width:1200px;margin:0 auto;padding:18px 16px 60px;}
-  header.topbar{
-    display:flex;align-items:center;justify-content:space-between;
-    gap:12px;margin-bottom:20px;flex-wrap:wrap;
-  }
-  .brand{display:flex;align-items:center;gap:10px;}
-  .brand-logo{
-    width:36px;height:36px;border-radius:10px;
-    background:linear-gradient(135deg,var(--accent),#0891b2);
-    display:flex;align-items:center;justify-content:center;font-size:18px;
-  }
-  .brand h1{font-size:16px;font-weight:600;}
-  .brand span{color:var(--muted);font-size:11px;display:block;}
+  /* ---------- LAYOUT ---------- */
+  #app{display:block;max-width:1200px;margin:0 auto;padding:18px 16px 60px;}
+  header.topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:12px;margin-bottom:20px;flex-wrap:wrap;
+  }
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand-logo{
+    width:36px;height:36px;border-radius:10px;
+    background:linear-gradient(135deg,var(--accent),#0891b2);
+    display:flex;align-items:center;justify-content:center;font-size:18px;
+  }
+  .brand h1{font-size:16px;font-weight:600;}
+  .brand span{color:var(--muted);font-size:11px;display:block;}
 
-  #syncStatus{
-    display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);
-    background:var(--card);border:1px solid var(--border);padding:6px 12px;border-radius:20px;
-  }
-  .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);}
-  .dot.off{background:var(--red);box-shadow:0 0 8px var(--red);}
-  .dot.pending{background:var(--yellow);box-shadow:0 0 8px var(--yellow);}
+  #syncStatus{
+    display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);
+    background:var(--card);border:1px solid var(--border);padding:6px 12px;border-radius:20px;
+  }
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);}
+  .dot.off{background:var(--red);box-shadow:0 0 8px var(--red);}
+  .dot.pending{background:var(--yellow);box-shadow:0 0 8px var(--yellow);}
 
-  .lock-toggle{
-    background:transparent;border:1px solid var(--border);color:var(--muted);
-    padding:6px 10px;border-radius:8px;font-size:12px;cursor:pointer;
-  }
-  .lock-toggle:hover{color:var(--text);border-color:var(--accent);}
+  .lock-toggle{
+    background:transparent;border:1px solid var(--border);color:var(--muted);
+    padding:6px 10px;border-radius:8px;font-size:12px;cursor:pointer;
+  }
+  .lock-toggle:hover{color:var(--text);border-color:var(--accent);}
 
-  .role-badge{
-    display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;
-    padding:6px 12px;border-radius:20px;border:1px solid var(--border);
-  }
-  .role-badge.role-admin{color:var(--accent);border-color:var(--accent-dim);background:var(--blue-bg);}
-  .role-badge.role-user{color:var(--muted);}
-  .readonly-banner{
-    background:var(--yellow-bg);color:var(--yellow);border:1px solid rgba(250,204,21,0.3);
-    border-radius:10px;padding:9px 14px;font-size:12.5px;margin-bottom:16px;
-    display:flex;align-items:center;gap:8px;
-  }
+  .role-badge{
+    display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;
+    padding:6px 12px;border-radius:20px;border:1px solid var(--border);
+  }
+  .role-badge.role-admin{color:var(--accent);border-color:var(--accent-dim);background:var(--blue-bg);}
+  .role-badge.role-user{color:var(--muted);}
+  .readonly-banner{
+    background:var(--yellow-bg);color:var(--yellow);border:1px solid rgba(250,204,21,0.3);
+    border-radius:10px;padding:9px 14px;font-size:12.5px;margin-bottom:16px;
+    display:flex;align-items:center;gap:8px;
+  }
 
-  /* summary cards */
-  .summary-grid{
-    display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;
-  }
-  .sum-card{
-    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
-    padding:16px 18px;position:relative;overflow:hidden;
-  }
-  .sum-card::before{
-    content:'';position:absolute;top:-30%;right:-20%;width:100px;height:100px;
-    border-radius:50%;background:radial-gradient(circle,var(--accent-dim) 0%,transparent 70%);opacity:.35;
-  }
-  .sum-label{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;}
-  .sum-value{font-size:22px;font-weight:700;}
-  .sum-value.pos{color:var(--green);}
-  .sum-value.neg{color:var(--red);}
-  .sum-sub{font-size:11px;color:var(--muted);margin-top:4px;}
+  /* summary cards */
+  .summary-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;
+  }
+  .sum-card{
+    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+    padding:16px 18px;position:relative;overflow:hidden;
+  }
+  .sum-card::before{
+    content:'';position:absolute;top:-30%;right:-20%;width:100px;height:100px;
+    border-radius:50%;background:radial-gradient(circle,var(--accent-dim) 0%,transparent 70%);opacity:.35;
+  }
+  .sum-label{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;}
+  .sum-value{font-size:22px;font-weight:700;}
+  .sum-value.pos{color:var(--green);}
+  .sum-value.neg{color:var(--red);}
+  .sum-sub{font-size:11px;color:var(--muted);margin-top:4px;}
 
-  /* toolbar */
-  .toolbar{
-    display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center;
-  }
-  .toolbar input[type=text], .toolbar select{
-    background:var(--card);border:1px solid var(--border);color:var(--text);
-    padding:10px 12px;border-radius:10px;font-size:13px;outline:none;
-  }
-  .toolbar input[type=text]{flex:1;min-width:180px;}
-  .toolbar input[type=text]:focus, .toolbar select:focus{border-color:var(--accent);}
-  .btn-primary{
-    background:var(--accent);color:#00252c;border:none;padding:10px 16px;
-    border-radius:10px;font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap;
-  }
-  .btn-primary:hover{filter:brightness(1.1);}
+  /* toolbar */
+  .toolbar{
+    display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center;
+  }
+  .toolbar input[type=text], .toolbar select{
+    background:var(--card);border:1px solid var(--border);color:var(--text);
+    padding:10px 12px;border-radius:10px;font-size:13px;outline:none;
+  }
+  .toolbar input[type=text]{flex:1;min-width:180px;}
+  .toolbar input[type=text]:focus, .toolbar select:focus{border-color:var(--accent);}
+  .btn-primary{
+    background:var(--accent);color:#00252c;border:none;padding:10px 16px;
+    border-radius:10px;font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap;
+  }
+  .btn-primary:hover{filter:brightness(1.1);}
 
-  /* table */
-  .table-wrap{
-    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
-    overflow:hidden;
-  }
-  table{width:100%;border-collapse:collapse;}
-  thead th{
-    text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.04em;
-    color:var(--muted);padding:12px 14px;border-bottom:1px solid var(--border);
-    background:var(--bg-alt);
-  }
-  tbody td{
-    padding:13px 14px;font-size:13.5px;border-bottom:1px solid var(--border);
-    vertical-align:middle;
-  }
-  tbody tr:last-child td{border-bottom:none;}
-  tbody tr:hover{background:var(--card-hover);}
-  .provider-cell{font-weight:600;}
-  .provider-sub{color:var(--muted);font-size:11px;margin-top:2px;}
-  .badge{
-    display:inline-block;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;
-  }
-  .badge-active{background:var(--green-bg);color:var(--green);}
-  .badge-passed{background:var(--blue-bg);color:var(--blue);}
-  .badge-failed{background:var(--red-bg);color:var(--red);}
-  .badge-onhold{background:var(--yellow-bg);color:var(--yellow);}
-  .type-tag{color:var(--muted);font-size:11.5px;}
-  .pl-pos{color:var(--green);font-weight:600;}
-  .pl-neg{color:var(--red);font-weight:600;}
-  .row-actions{display:flex;gap:6px;}
-  .icon-btn{
-    background:transparent;border:1px solid var(--border);color:var(--muted);
-    width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:13px;
-    display:flex;align-items:center;justify-content:center;
-  }
-  .icon-btn:hover{color:var(--text);border-color:var(--accent);}
-  .icon-btn.del:hover{color:var(--red);border-color:var(--red);}
-  .empty-state{padding:50px 20px;text-align:center;color:var(--muted);}
+  /* table */
+  .table-wrap{
+    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+    overflow:hidden;
+  }
+  table{width:100%;border-collapse:collapse;}
+  thead th{
+    text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.04em;
+    color:var(--muted);padding:12px 14px;border-bottom:1px solid var(--border);
+    background:var(--bg-alt);
+  }
+  tbody td{
+    padding:13px 14px;font-size:13.5px;border-bottom:1px solid var(--border);
+    vertical-align:middle;
+  }
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:var(--card-hover);}
+  .provider-cell{font-weight:600;}
+  .provider-sub{color:var(--muted);font-size:11px;margin-top:2px;}
+  .badge{
+    display:inline-block;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;
+  }
+  .badge-active{background:var(--green-bg);color:var(--green);}
+  .badge-passed{background:var(--blue-bg);color:var(--blue);}
+  .badge-failed{background:var(--red-bg);color:var(--red);}
+  .badge-onhold{background:var(--yellow-bg);color:var(--yellow);}
+  .type-tag{color:var(--muted);font-size:11.5px;}
+  .pl-pos{color:var(--green);font-weight:600;}
+  .pl-neg{color:var(--red);font-weight:600;}
+  .row-actions{display:flex;gap:6px;}
+  .icon-btn{
+    background:transparent;border:1px solid var(--border);color:var(--muted);
+    width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:13px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .icon-btn:hover{color:var(--text);border-color:var(--accent);}
+  .icon-btn.del:hover{color:var(--red);border-color:var(--red);}
+  .empty-state{padding:50px 20px;text-align:center;color:var(--muted);}
 
-  /* modal */
-  .modal-overlay{
-    position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(2px);
-    display:none;align-items:center;justify-content:center;z-index:500;padding:16px;
-  }
-  .modal-box{
-    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
-    width:100%;max-width:520px;max-height:90vh;overflow-y:auto;padding:22px;box-shadow:var(--shadow);
-  }
-  .modal-box h3{font-size:16px;margin-bottom:16px;}
-  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-  .form-grid .full{grid-column:1/-1;}
-  .field label{font-size:11.5px;color:var(--muted);display:block;margin-bottom:5px;}
-  .field input, .field select, .field textarea{
-    width:100%;background:var(--bg-alt);border:1px solid var(--border);color:var(--text);
-    padding:9px 11px;border-radius:8px;font-size:13.5px;outline:none;font-family:inherit;
-  }
-  .field input:focus, .field select:focus, .field textarea:focus{border-color:var(--accent);}
-  .field textarea{resize:vertical;min-height:60px;}
-  .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;}
-  .btn-ghost{
-    background:transparent;border:1px solid var(--border);color:var(--muted);
-    padding:10px 16px;border-radius:10px;font-size:13px;cursor:pointer;
-  }
-  .btn-ghost:hover{color:var(--text);}
+  /* modal */
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(2px);
+    display:none;align-items:center;justify-content:center;z-index:500;padding:16px;
+  }
+  .modal-box{
+    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+    width:100%;max-width:520px;max-height:90vh;overflow-y:auto;padding:22px;box-shadow:var(--shadow);
+  }
+  .modal-box h3{font-size:16px;margin-bottom:16px;}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .form-grid .full{grid-column:1/-1;}
+  .field label{font-size:11.5px;color:var(--muted);display:block;margin-bottom:5px;}
+  .field input, .field select, .field textarea{
+    width:100%;background:var(--bg-alt);border:1px solid var(--border);color:var(--text);
+    padding:9px 11px;border-radius:8px;font-size:13.5px;outline:none;font-family:inherit;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{border-color:var(--accent);}
+  .field textarea{resize:vertical;min-height:60px;}
+  .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;}
+  .btn-ghost{
+    background:transparent;border:1px solid var(--border);color:var(--muted);
+    padding:10px 16px;border-radius:10px;font-size:13px;cursor:pointer;
+  }
+  .btn-ghost:hover{color:var(--text);}
 
-  /* mobile card layout */
-  @media (max-width:760px){
-    .summary-grid{grid-template-columns:1fr 1fr;}
-    thead{display:none;}
-    table, tbody, tr, td{display:block;width:100%;}
-    tbody tr{
-      border-bottom:1px solid var(--border);padding:12px 14px;
-    }
-    tbody td{
-      border:none;padding:6px 0;display:flex;justify-content:space-between;gap:10px;
-      font-size:13px;
-    }
-    tbody td::before{
-      content:attr(data-label);color:var(--muted);font-size:11px;font-weight:600;
-      text-transform:uppercase;letter-spacing:.03em;flex-shrink:0;
-    }
-    .row-actions{justify-content:flex-end;}
-    .form-grid{grid-template-columns:1fr;}
-  }
-  @media (max-width:420px){
-    .summary-grid{grid-template-columns:1fr;}
-  }
+  /* mobile card layout */
+  @media (max-width:760px){
+    .summary-grid{grid-template-columns:1fr 1fr;}
+    thead{display:none;}
+    table, tbody, tr, td{display:block;width:100%;}
+    tbody tr{
+      border-bottom:1px solid var(--border);padding:12px 14px;
+    }
+    tbody td{
+      border:none;padding:6px 0;display:flex;justify-content:space-between;gap:10px;
+      font-size:13px;
+    }
+    tbody td::before{
+      content:attr(data-label);color:var(--muted);font-size:11px;font-weight:600;
+      text-transform:uppercase;letter-spacing:.03em;flex-shrink:0;
+    }
+    .row-actions{justify-content:flex-end;}
+    .form-grid{grid-template-columns:1fr;}
+  }
+  @media (max-width:420px){
+    .summary-grid{grid-template-columns:1fr;}
+  }
 </style>
 </head>
 <body>
 
 <!-- ================= APP ================= -->
 <div id="app">
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-logo">📈</div>
-      <div>
-        <h1>Trading Account Tracker</h1>
-        <span>Multi-device • Real-time sync</span>
-      </div>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-      <div id="syncStatus"><span class="dot pending" id="syncDot"></span><span id="syncText">Menghubungkan...</span></div>
-      <span class="role-badge" id="roleBadge"></span>
-      <button class="lock-toggle" id="changeAdminPinBtn" style="display:none;">⚙ Ubah PIN Admin</button>
-      <button class="btn-primary" id="adminLoginBtn" style="padding:8px 14px;font-size:12px;">🔑 Masuk Admin</button>
-      <button class="lock-toggle" id="adminLogoutBtn" style="display:none;">🔓 Keluar Admin</button>
-    </div>
-  </header>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo">📈</div>
+      <div>
+        <h1>Trading Account Tracker</h1>
+        <span>Multi-device • Real-time sync</span>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <div id="syncStatus"><span class="dot pending" id="syncDot"></span><span id="syncText">Menghubungkan...</span></div>
+      <span class="role-badge" id="roleBadge"></span>
+      <button class="lock-toggle" id="changeAdminPinBtn" style="display:none;">⚙ Ubah PIN Admin</button>
+      <button class="btn-primary" id="adminLoginBtn" style="padding:8px 14px;font-size:12px;">🔑 Masuk Admin</button>
+      <button class="lock-toggle" id="adminLogoutBtn" style="display:none;">🔓 Keluar Admin</button>
+    </div>
+  </header>
 
-  <div class="readonly-banner" id="readonlyBanner" style="display:none;">
-    👁 Anda masuk sebagai <strong>User (Read-only)</strong> — hanya bisa melihat data, tidak bisa menambah/mengubah/menghapus akun.
-  </div>
+  <div class="readonly-banner" id="readonlyBanner" style="display:none;">
+    👁 Anda masuk sebagai <strong>User (Read-only)</strong> — hanya bisa melihat data, tidak bisa menambah/mengubah/menghapus akun.
+  </div>
 
-  <div class="summary-grid">
-    <div class="sum-card">
-      <div class="sum-label">Total Modal Awal</div>
-      <div class="sum-value" id="sumInitial">$0</div>
-    </div>
-    <div class="sum-card">
-      <div class="sum-label">Total Balance Saat Ini</div>
-      <div class="sum-value" id="sumCurrent">$0</div>
-    </div>
-    <div class="sum-card">
-      <div class="sum-label">Total P/L</div>
-      <div class="sum-value" id="sumPL">$0</div>
-      <div class="sum-sub" id="sumPLPct">0%</div>
-    </div>
-    <div class="sum-card">
-      <div class="sum-label">Akun Aktif</div>
-      <div class="sum-value" id="sumActive">0</div>
-      <div class="sum-sub" id="sumTotalAcc">dari 0 total akun</div>
-    </div>
-  </div>
+  <div class="summary-grid">
+    <div class="sum-card">
+      <div class="sum-label">Total Modal Awal</div>
+      <div class="sum-value" id="sumInitial">$0</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">Total Balance Saat Ini</div>
+      <div class="sum-value" id="sumCurrent">$0</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">Total P/L</div>
+      <div class="sum-value" id="sumPL">$0</div>
+      <div class="sum-sub" id="sumPLPct">0%</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">Akun Aktif</div>
+      <div class="sum-value" id="sumActive">0</div>
+      <div class="sum-sub" id="sumTotalAcc">dari 0 total akun</div>
+    </div>
+  </div>
 
-  <div class="toolbar">
-    <input type="text" id="searchInput" placeholder="🔍 Cari nama akun / provider...">
-    <select id="filterStatus">
-      <option value="">Semua Status</option>
-      <option value="Active">Active</option>
-      <option value="Passed">Passed</option>
-      <option value="Failed">Failed</option>
-      <option value="On Hold">On Hold</option>
-    </select>
-    <select id="filterType">
-      <option value="">Semua Tipe</option>
-      <option value="Real">Real</option>
-      <option value="Funded Evaluation">Funded Evaluation</option>
-      <option value="Funded Master">Funded Master</option>
-      <option value="Demo">Demo</option>
-    </select>
-    <button class="btn-primary" id="addBtn">+ Tambah Akun</button>
-  </div>
+  <div class="toolbar">
+    <input type="text" id="searchInput" placeholder="🔍 Cari nama akun / provider...">
+    <select id="filterStatus">
+      <option value="">Semua Status</option>
+      <option value="Active">Active</option>
+      <option value="Passed">Passed</option>
+      <option value="Failed">Failed</option>
+      <option value="On Hold">On Hold</option>
+    </select>
+    <select id="filterType">
+      <option value="">Semua Tipe</option>
+      <option value="Real">Real</option>
+      <option value="Funded Evaluation">Funded Evaluation</option>
+      <option value="Funded Master">Funded Master</option>
+      <option value="Demo">Demo</option>
+    </select>
+    <button class="btn-primary" id="addBtn">+ Tambah Akun</button>
+  </div>
 
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Provider / Akun</th>
-          <th>Tipe</th>
-          <th>Pair Fokus</th>
-          <th>Modal Awal</th>
-          <th>Balance Saat Ini</th>
-          <th>P/L</th>
-          <th>Status</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody id="tableBody">
-      </tbody>
-    </table>
-    <div class="empty-state" id="emptyState" style="display:none;">Belum ada akun trading. Klik "+ Tambah Akun" untuk mulai.</div>
-  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Provider / Akun</th>
+          <th>Tipe</th>
+          <th>Pair Fokus</th>
+          <th>Modal Awal</th>
+          <th>Balance Saat Ini</th>
+          <th>P/L</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+      </tbody>
+    </table>
+    <div class="empty-state" id="emptyState" style="display:none;">Belum ada akun trading. Klik "+ Tambah Akun" untuk mulai.</div>
+  </div>
 </div>
 
 <!-- ================= FORM MODAL ================= -->
 <div class="modal-overlay" id="modalOverlay">
-  <div class="modal-box">
-    <h3 id="modalTitle">Tambah Akun Trading</h3>
-    <form id="accountForm">
-      <input type="hidden" id="fId">
-      <div class="form-grid">
-        <div class="field full">
-          <label>Nama Akun / Provider</label>
-          <input type="text" id="fProvider" placeholder="contoh: Exness, Valetax, AquaFunded" required>
-        </div>
-        <div class="field">
-          <label>Tipe Akun</label>
-          <select id="fType" required>
-            <option value="Real">Real</option>
-            <option value="Funded Evaluation">Funded Evaluation</option>
-            <option value="Funded Master">Funded Master</option>
-            <option value="Demo">Demo</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Nomor Akun / Login ID</label>
-          <input type="text" id="fLogin" placeholder="contoh: 123456789">
-        </div>
-        <div class="field">
-          <label>Pair Fokus</label>
-          <input type="text" id="fPair" placeholder="contoh: XAU/USD, AUD/USD">
-        </div>
-        <div class="field">
-          <label>Status Akun</label>
-          <select id="fStatus" required>
-            <option value="Active">Active</option>
-            <option value="Passed">Passed</option>
-            <option value="Failed">Failed</option>
-            <option value="On Hold">On Hold</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Modal Awal (Initial Balance)</label>
-          <input type="number" step="0.01" id="fInitial" placeholder="0.00" required>
-        </div>
-        <div class="field">
-          <label>Balance Saat Ini</label>
-          <input type="number" step="0.01" id="fCurrent" placeholder="0.00" required>
-        </div>
-        <div class="field full">
-          <label>Catatan Tambahan</label>
-          <textarea id="fNotes" placeholder="Strategi, info tambahan, dsb."></textarea>
-        </div>
-      </div>
-      <div class="modal-actions">
-        <button type="button" class="btn-ghost" id="cancelBtn">Batal</button>
-        <button type="submit" class="btn-primary">Simpan</button>
-      </div>
-    </form>
-  </div>
+  <div class="modal-box">
+    <h3 id="modalTitle">Tambah Akun Trading</h3>
+    <form id="accountForm">
+      <input type="hidden" id="fId">
+      <div class="form-grid">
+        <div class="field full">
+          <label>Nama Akun / Provider</label>
+          <input type="text" id="fProvider" placeholder="contoh: Exness, Valetax, AquaFunded" required>
+        </div>
+        <div class="field">
+          <label>Tipe Akun</label>
+          <select id="fType" required>
+            <option value="Real">Real</option>
+            <option value="Funded Evaluation">Funded Evaluation</option>
+            <option value="Funded Master">Funded Master</option>
+            <option value="Demo">Demo</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Nomor Akun / Login ID</label>
+          <input type="text" id="fLogin" placeholder="contoh: 123456789">
+        </div>
+        <div class="field">
+          <label>Pair Fokus</label>
+          <input type="text" id="fPair" placeholder="contoh: XAU/USD, AUD/USD">
+        </div>
+        <div class="field">
+          <label>Status Akun</label>
+          <select id="fStatus" required>
+            <option value="Active">Active</option>
+            <option value="Passed">Passed</option>
+            <option value="Failed">Failed</option>
+            <option value="On Hold">On Hold</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Modal Awal (Initial Balance)</label>
+          <input type="number" step="0.01" id="fInitial" placeholder="0.00" required>
+        </div>
+        <div class="field">
+          <label>Balance Saat Ini</label>
+          <input type="number" step="0.01" id="fCurrent" placeholder="0.00" required>
+        </div>
+        <div class="field full">
+          <label>Catatan Tambahan</label>
+          <textarea id="fNotes" placeholder="Strategi, info tambahan, dsb."></textarea>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-ghost" id="cancelBtn">Batal</button>
+        <button type="submit" class="btn-primary">Simpan</button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <!-- ================= MASUK ADMIN MODAL ================= -->
 <div class="modal-overlay" id="adminPinOverlay">
-  <div class="modal-box" style="max-width:380px;text-align:center;">
-    <div class="lock-icon" style="margin:0 auto 14px;">🔑</div>
-    <h3 id="adminPinTitle">Masuk sebagai Admin</h3>
-    <p style="color:var(--muted);font-size:12.5px;margin:8px 0 16px;" id="adminPinDesc">Masukkan PIN Admin untuk membuka akses tambah/edit/hapus.</p>
-    <input type="password" id="adminPinInput" inputmode="numeric" maxlength="8" placeholder="••••"
-      style="width:100%;padding:14px;font-size:22px;letter-spacing:8px;text-align:center;background:var(--bg-alt);border:1px solid var(--border);border-radius:10px;color:var(--text);outline:none;">
-    <div id="adminPinError" style="color:var(--red);font-size:12px;margin-top:10px;min-height:16px;"></div>
-    <div class="modal-actions" style="justify-content:center;margin-top:6px;">
-      <button type="button" class="btn-ghost" id="cancelAdminPinBtn">Batal</button>
-      <button type="button" class="btn-primary" id="adminPinSubmitBtn">Masuk</button>
-    </div>
-  </div>
+  <div class="modal-box" style="max-width:380px;text-align:center;">
+    <div class="lock-icon" style="margin:0 auto 14px;">🔑</div>
+    <h3 id="adminPinTitle">Masuk sebagai Admin</h3>
+    <p style="color:var(--muted);font-size:12.5px;margin:8px 0 16px;" id="adminPinDesc">Masukkan PIN Admin untuk membuka akses tambah/edit/hapus.</p>
+    <input type="password" id="adminPinInput" inputmode="numeric" maxlength="8" placeholder="••••"
+      style="width:100%;padding:14px;font-size:22px;letter-spacing:8px;text-align:center;background:var(--bg-alt);border:1px solid var(--border);border-radius:10px;color:var(--text);outline:none;">
+    <div id="adminPinError" style="color:var(--red);font-size:12px;margin-top:10px;min-height:16px;"></div>
+    <div class="modal-actions" style="justify-content:center;margin-top:6px;">
+      <button type="button" class="btn-ghost" id="cancelAdminPinBtn">Batal</button>
+      <button type="button" class="btn-primary" id="adminPinSubmitBtn">Masuk</button>
+    </div>
+  </div>
 </div>
 
 <!-- ================= UBAH PIN ADMIN MODAL ================= -->
 <div class="modal-overlay" id="pinManageOverlay">
-  <div class="modal-box" style="max-width:400px;">
-    <h3>Ubah PIN Admin</h3>
-    <p style="color:var(--muted);font-size:12.5px;margin-bottom:16px;">
-      Ganti PIN yang dipakai untuk masuk mode Admin (akses tambah/edit/hapus).
-    </p>
-    <div class="field" style="margin-bottom:12px;">
-      <label>PIN Admin Baru (4-8 digit)</label>
-      <input type="password" id="newAdminPin" inputmode="numeric" maxlength="8" placeholder="••••">
-    </div>
-    <div id="pinManageError" style="color:var(--red);font-size:12px;min-height:16px;margin-bottom:6px;"></div>
-    <div class="modal-actions">
-      <button type="button" class="btn-ghost" id="cancelPinManageBtn">Batal</button>
-      <button type="button" class="btn-primary" id="saveAdminPinBtn">Simpan</button>
-    </div>
-  </div>
+  <div class="modal-box" style="max-width:400px;">
+    <h3>Ubah PIN Admin</h3>
+    <p style="color:var(--muted);font-size:12.5px;margin-bottom:16px;">
+      Ganti PIN yang dipakai untuk masuk mode Admin (akses tambah/edit/hapus).
+    </p>
+    <div class="field" style="margin-bottom:12px;">
+      <label>PIN Admin Baru (4-8 digit)</label>
+      <input type="password" id="newAdminPin" inputmode="numeric" maxlength="8" placeholder="••••">
+    </div>
+    <div id="pinManageError" style="color:var(--red);font-size:12px;min-height:16px;margin-bottom:6px;"></div>
+    <div class="modal-actions">
+      <button type="button" class="btn-ghost" id="cancelPinManageBtn">Batal</button>
+      <button type="button" class="btn-primary" id="saveAdminPinBtn">Simpan</button>
+    </div>
+  </div>
 </div>
 
 <!-- Supabase client library -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* =========================================================================
-   KONFIGURASI SUPABASE — GANTI DUA NILAI DI BAWAH INI
-   Lihat petunjuk lengkap dari Claude untuk cara mendapatkan nilai ini.
-   ========================================================================= */
+   KONFIGURASI SUPABASE — GANTI DUA NILAI DI BAWAH INI
+   Lihat petunjuk lengkap dari Claude untuk cara mendapatkan nilai ini.
+   ========================================================================= */
 const SUPABASE_URL = "https://ctxtkilkceninsvjqvxs.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_8lW88kfOjhFfvJ3nsE472g_d-x63Teu";
 const TABLE_NAME = "trading_accounts";
@@ -435,202 +435,202 @@ let editingId = null;
 let realtimeReady = false;
 
 function initSupabase(){
-  if(SUPABASE_URL.includes("YOUR-PROJECT-ID") || SUPABASE_ANON_KEY.includes("YOUR-ANON")){
-    setSyncStatus('off', 'Belum dikonfigurasi');
-    document.getElementById('emptyState').style.display = 'block';
-    document.getElementById('emptyState').textContent = 'Supabase belum dikonfigurasi. Edit SUPABASE_URL dan SUPABASE_ANON_KEY di dalam file HTML ini.';
-    return;
-  }
-  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  fetchAccounts();
-  subscribeRealtime();
+  if(SUPABASE_URL.includes("YOUR-PROJECT-ID") || SUPABASE_ANON_KEY.includes("YOUR-ANON")){
+    setSyncStatus('off', 'Belum dikonfigurasi');
+    document.getElementById('emptyState').style.display = 'block';
+    document.getElementById('emptyState').textContent = 'Supabase belum dikonfigurasi. Edit SUPABASE_URL dan SUPABASE_ANON_KEY di dalam file HTML ini.';
+    return;
+  }
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  fetchAccounts();
+  subscribeRealtime();
 }
 
 function setSyncStatus(state, text){
-  const dot = document.getElementById('syncDot');
-  const label = document.getElementById('syncText');
-  dot.className = 'dot' + (state === 'on' ? '' : ' ' + state);
-  label.textContent = text;
+  const dot = document.getElementById('syncDot');
+  const label = document.getElementById('syncText');
+  dot.className = 'dot' + (state === 'on' ? '' : ' ' + state);
+  label.textContent = text;
 }
 
 async function fetchAccounts(){
-  setSyncStatus('pending', 'Menyinkronkan...');
-  const { data, error } = await sb.from(TABLE_NAME).select('*').order('created_at', { ascending: true });
-  if(error){
-    console.error(error);
-    setSyncStatus('off', 'Gagal terhubung');
-    return;
-  }
-  accounts = data || [];
-  setSyncStatus('on', 'Tersambung • Real-time');
-  render();
+  setSyncStatus('pending', 'Menyinkronkan...');
+  const { data, error } = await sb.from(TABLE_NAME).select('*').order('created_at', { ascending: true });
+  if(error){
+    console.error(error);
+    setSyncStatus('off', 'Gagal terhubung');
+    return;
+  }
+  accounts = data || [];
+  setSyncStatus('on', 'Tersambung • Real-time');
+  render();
 }
 
 function subscribeRealtime(){
-  sb.channel('public:' + TABLE_NAME)
-    .on('postgres_changes', { event: '*', schema: 'public', table: TABLE_NAME }, () => {
-      fetchAccounts();
-    })
-    .subscribe();
+  sb.channel('public:' + TABLE_NAME)
+    .on('postgres_changes', { event: '*', schema: 'public', table: TABLE_NAME }, () => {
+      fetchAccounts();
+    })
+    .subscribe();
 }
 
 function isAdmin(){
-  return sessionStorage.getItem('tt_role') === 'admin';
+  return sessionStorage.getItem('tt_role') === 'admin';
 }
 
 function blockIfNotAdmin(){
-  if(!isAdmin()){
-    alert('Mode User hanya bisa melihat data. Tambah/ubah/hapus hanya untuk Admin.');
-    return true;
-  }
-  return false;
+  if(!isAdmin()){
+    alert('Mode User hanya bisa melihat data. Tambah/ubah/hapus hanya untuk Admin.');
+    return true;
+  }
+  return false;
 }
 
 async function saveAccount(payload){
-  if(blockIfNotAdmin()) return;
-  setSyncStatus('pending', 'Menyimpan...');
-  if(payload.id){
-    const id = payload.id;
-    delete payload.id;
-    const { error } = await sb.from(TABLE_NAME).update(payload).eq('id', id);
-    if(error){ alert('Gagal menyimpan: ' + error.message); setSyncStatus('off','Error'); return; }
-  } else {
-    const { error } = await sb.from(TABLE_NAME).insert([payload]);
-    if(error){ alert('Gagal menyimpan: ' + error.message); setSyncStatus('off','Error'); return; }
-  }
-  fetchAccounts();
+  if(blockIfNotAdmin()) return;
+  setSyncStatus('pending', 'Menyimpan...');
+  if(payload.id){
+    const id = payload.id;
+    delete payload.id;
+    const { error } = await sb.from(TABLE_NAME).update(payload).eq('id', id);
+    if(error){ alert('Gagal menyimpan: ' + error.message); setSyncStatus('off','Error'); return; }
+  } else {
+    const { error } = await sb.from(TABLE_NAME).insert([payload]);
+    if(error){ alert('Gagal menyimpan: ' + error.message); setSyncStatus('off','Error'); return; }
+  }
+  fetchAccounts();
 }
 
 async function deleteAccount(id){
-  if(blockIfNotAdmin()) return;
-  if(!confirm('Hapus akun trading ini?')) return;
-  setSyncStatus('pending', 'Menghapus...');
-  const { error } = await sb.from(TABLE_NAME).delete().eq('id', id);
-  if(error){ alert('Gagal menghapus: ' + error.message); return; }
-  fetchAccounts();
+  if(blockIfNotAdmin()) return;
+  if(!confirm('Hapus akun trading ini?')) return;
+  setSyncStatus('pending', 'Menghapus...');
+  const { error } = await sb.from(TABLE_NAME).delete().eq('id', id);
+  if(error){ alert('Gagal menghapus: ' + error.message); return; }
+  fetchAccounts();
 }
 
 /* ---------------- RENDER ---------------- */
 function fmtMoney(n){
-  n = Number(n) || 0;
-  return '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+  n = Number(n) || 0;
+  return '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
 }
 
 function statusBadgeClass(status){
-  switch(status){
-    case 'Active': return 'badge-active';
-    case 'Passed': return 'badge-passed';
-    case 'Failed': return 'badge-failed';
-    case 'On Hold': return 'badge-onhold';
-    default: return 'badge-onhold';
-  }
+  switch(status){
+    case 'Active': return 'badge-active';
+    case 'Passed': return 'badge-passed';
+    case 'Failed': return 'badge-failed';
+    case 'On Hold': return 'badge-onhold';
+    default: return 'badge-onhold';
+  }
 }
 
 function render(){
-  const search = document.getElementById('searchInput').value.trim().toLowerCase();
-  const fStatus = document.getElementById('filterStatus').value;
-  const fType = document.getElementById('filterType').value;
+  const search = document.getElementById('searchInput').value.trim().toLowerCase();
+  const fStatus = document.getElementById('filterStatus').value;
+  const fType = document.getElementById('filterType').value;
 
-  const filtered = accounts.filter(a => {
-    if(search && !(a.provider||'').toLowerCase().includes(search)) return false;
-    if(fStatus && a.status !== fStatus) return false;
-    if(fType && a.account_type !== fType) return false;
-    return true;
-  });
+  const filtered = accounts.filter(a => {
+    if(search && !(a.provider||'').toLowerCase().includes(search)) return false;
+    if(fStatus && a.status !== fStatus) return false;
+    if(fType && a.account_type !== fType) return false;
+    return true;
+  });
 
-  const tbody = document.getElementById('tableBody');
-  const emptyState = document.getElementById('emptyState');
-  tbody.innerHTML = '';
+  const tbody = document.getElementById('tableBody');
+  const emptyState = document.getElementById('emptyState');
+  tbody.innerHTML = '';
 
-  if(filtered.length === 0){
-    emptyState.style.display = 'block';
-    if(accounts.length > 0) emptyState.textContent = 'Tidak ada akun yang cocok dengan pencarian/filter.';
-  } else {
-    emptyState.style.display = 'none';
-  }
+  if(filtered.length === 0){
+    emptyState.style.display = 'block';
+    if(accounts.length > 0) emptyState.textContent = 'Tidak ada akun yang cocok dengan pencarian/filter.';
+  } else {
+    emptyState.style.display = 'none';
+  }
 
-  filtered.forEach(a => {
-    const pl = (Number(a.current_balance)||0) - (Number(a.initial_balance)||0);
-    const plClass = pl >= 0 ? 'pl-pos' : 'pl-neg';
-    const plSign = pl >= 0 ? '+' : '';
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td data-label="Provider">
-        <div class="provider-cell">${escapeHtml(a.provider||'-')}</div>
-        <div class="provider-sub">${escapeHtml(a.login_id||'')}</div>
-      </td>
-      <td data-label="Tipe"><span class="type-tag">${escapeHtml(a.account_type||'-')}</span></td>
-      <td data-label="Pair Fokus">${escapeHtml(a.pair_focus||'-')}</td>
-      <td data-label="Modal Awal">${fmtMoney(a.initial_balance)}</td>
-      <td data-label="Balance Saat Ini">${fmtMoney(a.current_balance)}</td>
-      <td data-label="P/L"><span class="${plClass}">${plSign}${fmtMoney(pl)}</span></td>
-      <td data-label="Status"><span class="badge ${statusBadgeClass(a.status)}">${escapeHtml(a.status||'-')}</span></td>
-      <td data-label="">
-        ${isAdmin() ? `
-        <div class="row-actions">
-          <button class="icon-btn" onclick="openEdit('${a.id}')" title="Edit">✏️</button>
-          <button class="icon-btn del" onclick="deleteAccount('${a.id}')" title="Hapus">🗑️</button>
-        </div>` : ''}
-      </td>
-    `;
-    tbody.appendChild(tr);
-  });
+  filtered.forEach(a => {
+    const pl = (Number(a.current_balance)||0) - (Number(a.initial_balance)||0);
+    const plClass = pl >= 0 ? 'pl-pos' : 'pl-neg';
+    const plSign = pl >= 0 ? '+' : '';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td data-label="Provider">
+        <div class="provider-cell">${escapeHtml(a.provider||'-')}</div>
+        <div class="provider-sub">${escapeHtml(a.login_id||'')}</div>
+      </td>
+      <td data-label="Tipe"><span class="type-tag">${escapeHtml(a.account_type||'-')}</span></td>
+      <td data-label="Pair Fokus">${escapeHtml(a.pair_focus||'-')}</td>
+      <td data-label="Modal Awal">${fmtMoney(a.initial_balance)}</td>
+      <td data-label="Balance Saat Ini">${fmtMoney(a.current_balance)}</td>
+      <td data-label="P/L"><span class="${plClass}">${plSign}${fmtMoney(pl)}</span></td>
+      <td data-label="Status"><span class="badge ${statusBadgeClass(a.status)}">${escapeHtml(a.status||'-')}</span></td>
+      <td data-label="">
+        ${isAdmin() ? `
+        <div class="row-actions">
+          <button class="icon-btn" onclick="openEdit('${a.id}')" title="Edit">✏️</button>
+          <button class="icon-btn del" onclick="deleteAccount('${a.id}')" title="Hapus">🗑️</button>
+        </div>` : ''}
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
 
-  // summary
-  const totalInitial = accounts.reduce((s,a)=> s + (Number(a.initial_balance)||0), 0);
-  const totalCurrent = accounts.reduce((s,a)=> s + (Number(a.current_balance)||0), 0);
-  const totalPL = totalCurrent - totalInitial;
-  const plPct = totalInitial > 0 ? (totalPL/totalInitial*100) : 0;
-  const activeCount = accounts.filter(a => a.status === 'Active').length;
+  // summary
+  const totalInitial = accounts.reduce((s,a)=> s + (Number(a.initial_balance)||0), 0);
+  const totalCurrent = accounts.reduce((s,a)=> s + (Number(a.current_balance)||0), 0);
+  const totalPL = totalCurrent - totalInitial;
+  const plPct = totalInitial > 0 ? (totalPL/totalInitial*100) : 0;
+  const activeCount = accounts.filter(a => a.status === 'Active').length;
 
-  document.getElementById('sumInitial').textContent = fmtMoney(totalInitial);
-  document.getElementById('sumCurrent').textContent = fmtMoney(totalCurrent);
-  const plEl = document.getElementById('sumPL');
-  plEl.textContent = (totalPL>=0?'+':'') + fmtMoney(totalPL);
-  plEl.className = 'sum-value ' + (totalPL>=0 ? 'pos':'neg');
-  document.getElementById('sumPLPct').textContent = (plPct>=0?'+':'') + plPct.toFixed(2) + '%';
-  document.getElementById('sumActive').textContent = activeCount;
-  document.getElementById('sumTotalAcc').textContent = 'dari ' + accounts.length + ' total akun';
+  document.getElementById('sumInitial').textContent = fmtMoney(totalInitial);
+  document.getElementById('sumCurrent').textContent = fmtMoney(totalCurrent);
+  const plEl = document.getElementById('sumPL');
+  plEl.textContent = (totalPL>=0?'+':'') + fmtMoney(totalPL);
+  plEl.className = 'sum-value ' + (totalPL>=0 ? 'pos':'neg');
+  document.getElementById('sumPLPct').textContent = (plPct>=0?'+':'') + plPct.toFixed(2) + '%';
+  document.getElementById('sumActive').textContent = activeCount;
+  document.getElementById('sumTotalAcc').textContent = 'dari ' + accounts.length + ' total akun';
 }
 
 function escapeHtml(str){
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
 }
 
 /* ---------------- MODAL / FORM ---------------- */
 const modalOverlay = document.getElementById('modalOverlay');
 
 function openAdd(){
-  if(blockIfNotAdmin()) return;
-  editingId = null;
-  document.getElementById('modalTitle').textContent = 'Tambah Akun Trading';
-  document.getElementById('accountForm').reset();
-  document.getElementById('fId').value = '';
-  modalOverlay.style.display = 'flex';
+  if(blockIfNotAdmin()) return;
+  editingId = null;
+  document.getElementById('modalTitle').textContent = 'Tambah Akun Trading';
+  document.getElementById('accountForm').reset();
+  document.getElementById('fId').value = '';
+  modalOverlay.style.display = 'flex';
 }
 
 function openEdit(id){
-  if(blockIfNotAdmin()) return;
-  const a = accounts.find(x => x.id === id);
-  if(!a) return;
-  editingId = id;
-  document.getElementById('modalTitle').textContent = 'Edit Akun Trading';
-  document.getElementById('fId').value = a.id;
-  document.getElementById('fProvider').value = a.provider || '';
-  document.getElementById('fType').value = a.account_type || 'Real';
-  document.getElementById('fLogin').value = a.login_id || '';
-  document.getElementById('fPair').value = a.pair_focus || '';
-  document.getElementById('fStatus').value = a.status || 'Active';
-  document.getElementById('fInitial').value = a.initial_balance || 0;
-  document.getElementById('fCurrent').value = a.current_balance || 0;
-  document.getElementById('fNotes').value = a.notes || '';
-  modalOverlay.style.display = 'flex';
+  if(blockIfNotAdmin()) return;
+  const a = accounts.find(x => x.id === id);
+  if(!a) return;
+  editingId = id;
+  document.getElementById('modalTitle').textContent = 'Edit Akun Trading';
+  document.getElementById('fId').value = a.id;
+  document.getElementById('fProvider').value = a.provider || '';
+  document.getElementById('fType').value = a.account_type || 'Real';
+  document.getElementById('fLogin').value = a.login_id || '';
+  document.getElementById('fPair').value = a.pair_focus || '';
+  document.getElementById('fStatus').value = a.status || 'Active';
+  document.getElementById('fInitial').value = a.initial_balance || 0;
+  document.getElementById('fCurrent').value = a.current_balance || 0;
+  document.getElementById('fNotes').value = a.notes || '';
+  modalOverlay.style.display = 'flex';
 }
 
 function closeModal(){
-  modalOverlay.style.display = 'none';
+  modalOverlay.style.display = 'none';
 }
 
 document.getElementById('addBtn').addEventListener('click', openAdd);
@@ -638,21 +638,21 @@ document.getElementById('cancelBtn').addEventListener('click', closeModal);
 modalOverlay.addEventListener('click', (e) => { if(e.target === modalOverlay) closeModal(); });
 
 document.getElementById('accountForm').addEventListener('submit', function(e){
-  e.preventDefault();
-  const payload = {
-    provider: document.getElementById('fProvider').value.trim(),
-    account_type: document.getElementById('fType').value,
-    login_id: document.getElementById('fLogin').value.trim(),
-    pair_focus: document.getElementById('fPair').value.trim(),
-    status: document.getElementById('fStatus').value,
-    initial_balance: parseFloat(document.getElementById('fInitial').value) || 0,
-    current_balance: parseFloat(document.getElementById('fCurrent').value) || 0,
-    notes: document.getElementById('fNotes').value.trim()
-  };
-  const idVal = document.getElementById('fId').value;
-  if(idVal) payload.id = idVal;
-  saveAccount(payload);
-  closeModal();
+  e.preventDefault();
+  const payload = {
+    provider: document.getElementById('fProvider').value.trim(),
+    account_type: document.getElementById('fType').value,
+    login_id: document.getElementById('fLogin').value.trim(),
+    pair_focus: document.getElementById('fPair').value.trim(),
+    status: document.getElementById('fStatus').value,
+    initial_balance: parseFloat(document.getElementById('fInitial').value) || 0,
+    current_balance: parseFloat(document.getElementById('fCurrent').value) || 0,
+    notes: document.getElementById('fNotes').value.trim()
+  };
+  const idVal = document.getElementById('fId').value;
+  if(idVal) payload.id = idVal;
+  saveAccount(payload);
+  closeModal();
 });
 
 document.getElementById('searchInput').addEventListener('input', render);
@@ -661,58 +661,58 @@ document.getElementById('filterType').addEventListener('change', render);
 
 /* ---------------- ROLE: user (default, read-only) / admin (via PIN) ---------------- */
 const ADMIN_PIN_KEY = 'tt_admin_pin_hash';
-const OLD_PIN_KEY = 'tt_pin_hash';       // migrasi dari versi PIN tunggal lama
+const OLD_PIN_KEY = 'tt_pin_hash';       // migrasi dari versi PIN tunggal lama
 const OLD_USER_PIN_KEY = 'tt_user_pin_hash'; // sudah tidak dipakai di versi ini
 
 // migrasi: kalau ada PIN lama, jadikan PIN Admin
 if(localStorage.getItem(OLD_PIN_KEY) && !localStorage.getItem(ADMIN_PIN_KEY)){
-  localStorage.setItem(ADMIN_PIN_KEY, localStorage.getItem(OLD_PIN_KEY));
-  localStorage.removeItem(OLD_PIN_KEY);
+  localStorage.setItem(ADMIN_PIN_KEY, localStorage.getItem(OLD_PIN_KEY));
+  localStorage.removeItem(OLD_PIN_KEY);
 }
 localStorage.removeItem(OLD_USER_PIN_KEY);
 
 function simpleHash(str){
-  let hash = 0;
-  for(let i=0;i<str.length;i++){
-    hash = ((hash << 5) - hash) + str.charCodeAt(i);
-    hash |= 0;
-  }
-  return hash.toString();
+  let hash = 0;
+  for(let i=0;i<str.length;i++){
+    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return hash.toString();
 }
 
 function hasAdminPin(){ return true; } // selalu ada — minimal PIN default dari ADMIN_PIN_DEFAULT
 function getAdminPinHash(){
-  const override = localStorage.getItem(ADMIN_PIN_KEY);
-  return override || simpleHash(ADMIN_PIN_DEFAULT);
+  const override = localStorage.getItem(ADMIN_PIN_KEY);
+  return override || simpleHash(ADMIN_PIN_DEFAULT);
 }
 function currentRole(){ return sessionStorage.getItem('tt_role') === 'admin' ? 'admin' : 'user'; }
 
 function updateRoleUI(){
-  const role = currentRole();
-  const badge = document.getElementById('roleBadge');
-  const banner = document.getElementById('readonlyBanner');
-  const addBtn = document.getElementById('addBtn');
-  const loginBtn = document.getElementById('adminLoginBtn');
-  const logoutBtn = document.getElementById('adminLogoutBtn');
-  const changePinBtn = document.getElementById('changeAdminPinBtn');
-  if(role === 'admin'){
-    badge.textContent = '🛡 Admin';
-    badge.className = 'role-badge role-admin';
-    banner.style.display = 'none';
-    addBtn.style.display = 'inline-block';
-    loginBtn.style.display = 'none';
-    logoutBtn.style.display = 'inline-block';
-    changePinBtn.style.display = 'inline-block';
-  } else {
-    badge.textContent = '👁 User (Read-only)';
-    badge.className = 'role-badge role-user';
-    banner.style.display = 'flex';
-    addBtn.style.display = 'none';
-    loginBtn.style.display = 'inline-block';
-    logoutBtn.style.display = 'none';
-    changePinBtn.style.display = 'none';
-  }
-  render();
+  const role = currentRole();
+  const badge = document.getElementById('roleBadge');
+  const banner = document.getElementById('readonlyBanner');
+  const addBtn = document.getElementById('addBtn');
+  const loginBtn = document.getElementById('adminLoginBtn');
+  const logoutBtn = document.getElementById('adminLogoutBtn');
+  const changePinBtn = document.getElementById('changeAdminPinBtn');
+  if(role === 'admin'){
+    badge.textContent = '🛡 Admin';
+    badge.className = 'role-badge role-admin';
+    banner.style.display = 'none';
+    addBtn.style.display = 'inline-block';
+    loginBtn.style.display = 'none';
+    logoutBtn.style.display = 'inline-block';
+    changePinBtn.style.display = 'inline-block';
+  } else {
+    badge.textContent = '👁 User (Read-only)';
+    badge.className = 'role-badge role-user';
+    banner.style.display = 'flex';
+    addBtn.style.display = 'none';
+    loginBtn.style.display = 'inline-block';
+    logoutBtn.style.display = 'none';
+    changePinBtn.style.display = 'none';
+  }
+  render();
 }
 
 /* ---- Modal: Masuk sebagai Admin ---- */
@@ -724,13 +724,13 @@ const adminPinError = document.getElementById('adminPinError');
 const adminPinSubmitBtn = document.getElementById('adminPinSubmitBtn');
 
 function openAdminPinModal(){
-  adminPinInput.value = '';
-  adminPinError.textContent = '';
-  adminPinTitle.textContent = 'Masuk sebagai Admin';
-  adminPinDesc.textContent = 'Masukkan PIN Admin untuk membuka akses tambah/edit/hapus.';
-  adminPinSubmitBtn.textContent = 'Masuk';
-  adminPinOverlay.style.display = 'flex';
-  adminPinInput.focus();
+  adminPinInput.value = '';
+  adminPinError.textContent = '';
+  adminPinTitle.textContent = 'Masuk sebagai Admin';
+  adminPinDesc.textContent = 'Masukkan PIN Admin untuk membuka akses tambah/edit/hapus.';
+  adminPinSubmitBtn.textContent = 'Masuk';
+  adminPinOverlay.style.display = 'flex';
+  adminPinInput.focus();
 }
 
 document.getElementById('adminLoginBtn').addEventListener('click', openAdminPinModal);
@@ -738,27 +738,27 @@ document.getElementById('cancelAdminPinBtn').addEventListener('click', () => { a
 adminPinOverlay.addEventListener('click', (e) => { if(e.target === adminPinOverlay) adminPinOverlay.style.display = 'none'; });
 
 function handleAdminPinSubmit(){
-  const val = adminPinInput.value.trim();
-  adminPinError.textContent = '';
-  if(val.length < 4){
-    adminPinError.textContent = 'PIN minimal 4 digit.';
-    return;
-  }
-  if(simpleHash(val) === getAdminPinHash()){
-    sessionStorage.setItem('tt_role', 'admin');
-    adminPinOverlay.style.display = 'none';
-    updateRoleUI();
-  } else {
-    adminPinError.textContent = 'PIN salah. Coba lagi.';
-    adminPinInput.value = '';
-  }
+  const val = adminPinInput.value.trim();
+  adminPinError.textContent = '';
+  if(val.length < 4){
+    adminPinError.textContent = 'PIN minimal 4 digit.';
+    return;
+  }
+  if(simpleHash(val) === getAdminPinHash()){
+    sessionStorage.setItem('tt_role', 'admin');
+    adminPinOverlay.style.display = 'none';
+    updateRoleUI();
+  } else {
+    adminPinError.textContent = 'PIN salah. Coba lagi.';
+    adminPinInput.value = '';
+  }
 }
 adminPinSubmitBtn.addEventListener('click', handleAdminPinSubmit);
 adminPinInput.addEventListener('keydown', (e) => { if(e.key === 'Enter') handleAdminPinSubmit(); });
 
 document.getElementById('adminLogoutBtn').addEventListener('click', () => {
-  sessionStorage.removeItem('tt_role');
-  updateRoleUI();
+  sessionStorage.removeItem('tt_role');
+  updateRoleUI();
 });
 
 /* ---- Modal: Ubah PIN Admin (hanya saat sudah masuk sebagai admin) ---- */
@@ -767,22 +767,22 @@ const newAdminPinInput = document.getElementById('newAdminPin');
 const pinManageError = document.getElementById('pinManageError');
 
 document.getElementById('changeAdminPinBtn').addEventListener('click', () => {
-  newAdminPinInput.value = '';
-  pinManageError.textContent = '';
-  pinManageOverlay.style.display = 'flex';
+  newAdminPinInput.value = '';
+  pinManageError.textContent = '';
+  pinManageOverlay.style.display = 'flex';
 });
 document.getElementById('cancelPinManageBtn').addEventListener('click', () => { pinManageOverlay.style.display = 'none'; });
 pinManageOverlay.addEventListener('click', (e) => { if(e.target === pinManageOverlay) pinManageOverlay.style.display = 'none'; });
 
 document.getElementById('saveAdminPinBtn').addEventListener('click', () => {
-  const val = newAdminPinInput.value.trim();
-  if(val.length < 4){
-    pinManageError.textContent = 'PIN minimal 4 digit.';
-    return;
-  }
-  localStorage.setItem(ADMIN_PIN_KEY, simpleHash(val));
-  pinManageOverlay.style.display = 'none';
-  alert('PIN Admin berhasil diubah.');
+  const val = newAdminPinInput.value.trim();
+  if(val.length < 4){
+    pinManageError.textContent = 'PIN minimal 4 digit.';
+    return;
+  }
+  localStorage.setItem(ADMIN_PIN_KEY, simpleHash(val));
+  pinManageOverlay.style.display = 'none';
+  alert('PIN Admin berhasil diubah.');
 });
 
 /* boot: konten selalu tampil sebagai User (read-only) secara default */
