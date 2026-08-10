@@ -4,6 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Trading Account Tracker</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a0e14">
+<meta name="background-color" content="#0a0e14">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Trading Tracker">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <style>
   :root{
     --bg:#0a0e14;
@@ -255,6 +266,7 @@
       <button class="lock-toggle" id="changeAdminPinBtn" style="display:none;">⚙ Ubah PIN Admin</button>
       <button class="btn-primary" id="adminLoginBtn" style="padding:8px 14px;font-size:12px;">🔑 Masuk Admin</button>
       <button class="lock-toggle" id="adminLogoutBtn" style="display:none;">🔓 Keluar Admin</button>
+      <button class="btn-primary" id="installBtn" style="display:none;padding:8px 14px;font-size:12px;">⬇️ Install App</button>
     </div>
   </header>
 
@@ -423,8 +435,8 @@
    KONFIGURASI SUPABASE — GANTI DUA NILAI DI BAWAH INI
    Lihat petunjuk lengkap dari Claude untuk cara mendapatkan nilai ini.
    ========================================================================= */
-const SUPABASE_URL = "https://ctxtkilkceninsvjqvxs.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_8lW88kfOjhFfvJ3nsE472g_d-x63Teu";
+const SUPABASE_URL = "https://YOUR-PROJECT-ID.supabase.co";
+const SUPABASE_ANON_KEY = "YOUR-ANON-PUBLIC-KEY";
 const TABLE_NAME = "trading_accounts";
 const ADMIN_PIN_DEFAULT = "4223"; // PIN Admin bawaan — sama di semua device selama belum diubah lewat "Ubah PIN Admin"
 /* ========================================================================= */
@@ -788,6 +800,37 @@ document.getElementById('saveAdminPinBtn').addEventListener('click', () => {
 /* boot: konten selalu tampil sebagai User (read-only) secara default */
 updateRoleUI();
 initSupabase();
+
+/* ---------------- PWA: service worker + tombol Install ---------------- */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').catch((err) => {
+      console.warn('Service worker gagal didaftarkan:', err);
+    });
+  });
+}
+
+let deferredInstallPrompt = null;
+const installBtn = document.getElementById('installBtn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  installBtn.style.display = 'inline-block';
+});
+
+installBtn.addEventListener('click', async () => {
+  if(!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  installBtn.style.display = 'none';
+});
+
+window.addEventListener('appinstalled', () => {
+  installBtn.style.display = 'none';
+  deferredInstallPrompt = null;
+});
 </script>
 </body>
 </html>
