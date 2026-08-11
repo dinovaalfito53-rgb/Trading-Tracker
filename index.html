@@ -34,6 +34,8 @@
     --blue-bg:rgba(96,165,250,0.14);
     --yellow:#facc15;
     --yellow-bg:rgba(250,204,21,0.14);
+    --purple:#a855f7;
+    --purple-bg:rgba(168,85,247,0.14);
     --radius:14px;
     --shadow:0 4px 24px rgba(0,0,0,0.35);
   }
@@ -185,6 +187,9 @@
   .badge-passed{background:var(--blue-bg);color:var(--blue);}
   .badge-failed{background:var(--red-bg);color:var(--red);}
   .badge-onhold{background:var(--yellow-bg);color:var(--yellow);}
+  .badge-pending{background:var(--purple-bg);color:var(--purple);border:1px solid rgba(168,85,247,0.3);}
+  .badge-nopending{background:var(--bg-alt);color:var(--muted);border:1px solid var(--border);}
+  
   .type-tag{color:var(--muted);font-size:11.5px;}
   .pl-pos{color:var(--green);font-weight:600;}
   .pl-neg{color:var(--red);font-weight:600;}
@@ -197,6 +202,20 @@
   .icon-btn:hover{color:var(--text);border-color:var(--accent);}
   .icon-btn.del:hover{color:var(--red);border-color:var(--red);}
   .empty-state{padding:50px 20px;text-align:center;color:var(--muted);}
+
+  /* custom checkbox */
+  .pending-check-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+  .pending-checkbox {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--purple);
+    cursor: pointer;
+  }
 
   /* modal */
   .modal-overlay{
@@ -311,6 +330,11 @@
       <option value="Funded Master">Funded Master</option>
       <option value="Demo">Demo</option>
     </select>
+    <select id="filterPending">
+      <option value="">Semua Pending Order</option>
+      <option value="yes">Ada Pending Order</option>
+      <option value="no">Tanpa Pending Order</option>
+    </select>
     <button class="btn-primary" id="addBtn">+ Tambah Akun</button>
   </div>
 
@@ -318,6 +342,7 @@
     <table>
       <thead>
         <tr>
+          <th>Pending Order</th>
           <th>Provider / Akun</th>
           <th>Tipe</th>
           <th>Pair Fokus</th>
@@ -380,6 +405,10 @@
           <label>Balance Saat Ini</label>
           <input type="number" step="0.01" id="fCurrent" placeholder="0.00" required>
         </div>
+        <div class="field full" style="display:flex;align-items:center;gap:10px;margin-top:5px;">
+          <input type="checkbox" id="fPending" class="pending-checkbox" style="width:20px;height:20px;">
+          <label for="fPending" style="margin:0;cursor:pointer;font-weight:600;color:var(--text);">Sudah Terpasang Pending Order</label>
+        </div>
         <div class="field full">
           <label>Catatan Tambahan</label>
           <textarea id="fNotes" placeholder="Strategi, info tambahan, dsb."></textarea>
@@ -432,19 +461,17 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* =========================================================================
-   KONFIGURASI SUPABASE — GANTI DUA NILAI DI BAWAH INI
-   Lihat petunjuk lengkap dari Claude untuk cara mendapatkan nilai ini.
+   KONFIGURASI SUPABASE
    ========================================================================= */
 const SUPABASE_URL = "https://ctxtkilkceninsvjqvxs.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_8lW88kfOjhFfvJ3nsE472g_d-x63Teu";
 const TABLE_NAME = "trading_accounts";
-const ADMIN_PIN_DEFAULT = "4223"; // PIN Admin bawaan — sama di semua device selama belum diubah lewat "Ubah PIN Admin"
+const ADMIN_PIN_DEFAULT = "4223";
 /* ========================================================================= */
 
 let sb = null;
 let accounts = [];
 let editingId = null;
-let realtimeReady = false;
 
 function initSupabase(){
   if(SUPABASE_URL.includes("YOUR-PROJECT-ID") || SUPABASE_ANON_KEY.includes("YOUR-ANON")){
@@ -498,6 +525,25 @@ function blockIfNotAdmin(){
   return false;
 }
 
+async function togglePendingOrder(id, isChecked){
+  if(blockIfNotAdmin()) {
+    render(); // reset state visual checkbox jika ditolak
+    return;
+  }
+  setSyncStatus('pending', 'Menyimpan...');
+  const { error } = await sb.from(TABLE_NAME).update({ has_pending_order: isChecked }).eq('id', id);
+  if(error){
+    alert('Gagal mengupdate status pending order: ' + error.message);
+    setSyncStatus('off', 'Error');
+    fetchAccounts();
+  } else {
+    setSyncStatus('on', 'Tersambung • Real-time');
+    const acc = accounts.find(a => a.id === id);
+    if(acc) acc.has_pending_order = isChecked;
+    render();
+  }
+}
+
 async function saveAccount(payload){
   if(blockIfNotAdmin()) return;
   setSyncStatus('pending', 'Menyimpan...');
@@ -542,11 +588,14 @@ function render(){
   const search = document.getElementById('searchInput').value.trim().toLowerCase();
   const fStatus = document.getElementById('filterStatus').value;
   const fType = document.getElementById('filterType').value;
+  const fPending = document.getElementById('filterPending').value;
 
   const filtered = accounts.filter(a => {
     if(search && !(a.provider||'').toLowerCase().includes(search)) return false;
     if(fStatus && a.status !== fStatus) return false;
     if(fType && a.account_type !== fType) return false;
+    if(fPending === 'yes' && !a.has_pending_order) return false;
+    if(fPending === 'no' && a.has_pending_order) return false;
     return true;
   });
 
@@ -565,8 +614,19 @@ function render(){
     const pl = (Number(a.current_balance)||0) - (Number(a.initial_balance)||0);
     const plClass = pl >= 0 ? 'pl-pos' : 'pl-neg';
     const plSign = pl >= 0 ? '+' : '';
+    const hasPending = !!a.has_pending_order;
     const tr = document.createElement('tr');
+    
     tr.innerHTML = `
+      <td data-label="Pending Order">
+        <label class="pending-check-wrap">
+          <input type="checkbox" class="pending-checkbox" ${hasPending ? 'checked' : ''} 
+            ${!isAdmin() ? 'disabled' : ''} onchange="togglePendingOrder('${a.id}', this.checked)">
+          <span class="badge ${hasPending ? 'badge-pending' : 'badge-nopending'}">
+            ${hasPending ? '📌 Order Set' : 'No Order'}
+          </span>
+        </label>
+      </td>
       <td data-label="Provider">
         <div class="provider-cell">${escapeHtml(a.provider||'-')}</div>
         <div class="provider-sub">${escapeHtml(a.login_id||'')}</div>
@@ -620,6 +680,7 @@ function openAdd(){
   document.getElementById('modalTitle').textContent = 'Tambah Akun Trading';
   document.getElementById('accountForm').reset();
   document.getElementById('fId').value = '';
+  document.getElementById('fPending').checked = false;
   modalOverlay.style.display = 'flex';
 }
 
@@ -637,6 +698,7 @@ function openEdit(id){
   document.getElementById('fStatus').value = a.status || 'Active';
   document.getElementById('fInitial').value = a.initial_balance || 0;
   document.getElementById('fCurrent').value = a.current_balance || 0;
+  document.getElementById('fPending').checked = !!a.has_pending_order;
   document.getElementById('fNotes').value = a.notes || '';
   modalOverlay.style.display = 'flex';
 }
@@ -659,6 +721,7 @@ document.getElementById('accountForm').addEventListener('submit', function(e){
     status: document.getElementById('fStatus').value,
     initial_balance: parseFloat(document.getElementById('fInitial').value) || 0,
     current_balance: parseFloat(document.getElementById('fCurrent').value) || 0,
+    has_pending_order: document.getElementById('fPending').checked,
     notes: document.getElementById('fNotes').value.trim()
   };
   const idVal = document.getElementById('fId').value;
@@ -670,13 +733,13 @@ document.getElementById('accountForm').addEventListener('submit', function(e){
 document.getElementById('searchInput').addEventListener('input', render);
 document.getElementById('filterStatus').addEventListener('change', render);
 document.getElementById('filterType').addEventListener('change', render);
+document.getElementById('filterPending').addEventListener('change', render);
 
 /* ---------------- ROLE: user (default, read-only) / admin (via PIN) ---------------- */
 const ADMIN_PIN_KEY = 'tt_admin_pin_hash';
-const OLD_PIN_KEY = 'tt_pin_hash';       // migrasi dari versi PIN tunggal lama
-const OLD_USER_PIN_KEY = 'tt_user_pin_hash'; // sudah tidak dipakai di versi ini
+const OLD_PIN_KEY = 'tt_pin_hash';
+const OLD_USER_PIN_KEY = 'tt_user_pin_hash';
 
-// migrasi: kalau ada PIN lama, jadikan PIN Admin
 if(localStorage.getItem(OLD_PIN_KEY) && !localStorage.getItem(ADMIN_PIN_KEY)){
   localStorage.setItem(ADMIN_PIN_KEY, localStorage.getItem(OLD_PIN_KEY));
   localStorage.removeItem(OLD_PIN_KEY);
@@ -692,7 +755,7 @@ function simpleHash(str){
   return hash.toString();
 }
 
-function hasAdminPin(){ return true; } // selalu ada — minimal PIN default dari ADMIN_PIN_DEFAULT
+function hasAdminPin(){ return true; }
 function getAdminPinHash(){
   const override = localStorage.getItem(ADMIN_PIN_KEY);
   return override || simpleHash(ADMIN_PIN_DEFAULT);
@@ -773,7 +836,7 @@ document.getElementById('adminLogoutBtn').addEventListener('click', () => {
   updateRoleUI();
 });
 
-/* ---- Modal: Ubah PIN Admin (hanya saat sudah masuk sebagai admin) ---- */
+/* ---- Modal: Ubah PIN Admin ---- */
 const pinManageOverlay = document.getElementById('pinManageOverlay');
 const newAdminPinInput = document.getElementById('newAdminPin');
 const pinManageError = document.getElementById('pinManageError');
@@ -797,11 +860,11 @@ document.getElementById('saveAdminPinBtn').addEventListener('click', () => {
   alert('PIN Admin berhasil diubah.');
 });
 
-/* boot: konten selalu tampil sebagai User (read-only) secara default */
+/* boot */
 updateRoleUI();
 initSupabase();
 
-/* ---------------- PWA: service worker + tombol Install ---------------- */
+/* ---------------- PWA ---------------- */
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('service-worker.js').catch((err) => {
