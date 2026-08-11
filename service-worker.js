@@ -1,6 +1,6 @@
-const CACHE_NAME = "trading-tracker-cache-v1";
+// Nama cache dinaikkan ke v2 untuk memaksa browser menghapus cache lama
+const CACHE_NAME = "trading-tracker-cache-v2";
 
-// App shell: file statis milik web-app ini sendiri (bukan data trading).
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -31,14 +31,12 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
 
-  // PENTING: jangan pernah cache request ke luar (Supabase, CDN supabase-js, dll).
-  // Data akun trading harus SELALU realtime dari network, bukan dari cache.
+  // Jangan cache request ke domain luar (Supabase, CDN, dll)
   if (url.origin !== self.location.origin) {
-    return; // biarkan browser tangani seperti biasa, tanpa campur tangan service worker
+    return;
   }
 
-  // Untuk file app-shell sendiri: stale-while-revalidate
-  // (langsung tampil dari cache biar cepat/offline, sambil diam-diam update di background)
+  // Stale-while-revalidate untuk file app-shell lokal
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       const networkFetch = fetch(event.request)
