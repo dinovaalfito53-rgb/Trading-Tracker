@@ -48,42 +48,6 @@
   ::selection{background:var(--accent-dim);}
   a{color:var(--accent);}
 
-  /* ---------- PIN LOCK ---------- */
-  #lockScreen{
-    position:fixed;inset:0;z-index:999;
-    background:var(--bg);
-    display:flex;align-items:center;justify-content:center;
-    flex-direction:column;gap:18px;padding:24px;
-  }
-  .lock-box{
-    background:var(--card);border:1px solid var(--border);
-    border-radius:var(--radius);padding:32px 28px;
-    width:100%;max-width:360px;box-shadow:var(--shadow);
-    text-align:center;
-  }
-  .lock-icon{
-    width:52px;height:52px;border-radius:50%;
-    background:var(--blue-bg);color:var(--accent);
-    display:flex;align-items:center;justify-content:center;
-    margin:0 auto 14px;font-size:24px;
-  }
-  .lock-box h2{font-size:18px;margin-bottom:6px;}
-  .lock-box p{color:var(--muted);font-size:13px;margin-bottom:20px;}
-  #pinInput{
-    width:100%;padding:14px;font-size:22px;letter-spacing:8px;
-    text-align:center;background:var(--bg-alt);border:1px solid var(--border);
-    border-radius:10px;color:var(--text);outline:none;
-  }
-  #pinInput:focus{border-color:var(--accent);}
-  .lock-btn{
-    margin-top:14px;width:100%;padding:12px;border:none;border-radius:10px;
-    background:var(--accent);color:#00252c;font-weight:600;font-size:14px;
-    cursor:pointer;transition:.15s;
-  }
-  .lock-btn:hover{filter:brightness(1.1);}
-  #lockError{color:var(--red);font-size:12px;margin-top:10px;min-height:16px;}
-  .lock-hint{color:var(--muted);font-size:11px;margin-top:14px;}
-
   /* ---------- LAYOUT ---------- */
   #app{display:block;max-width:1200px;margin:0 auto;padding:18px 16px 60px;}
   header.topbar{
@@ -119,11 +83,6 @@
   }
   .role-badge.role-admin{color:var(--accent);border-color:var(--accent-dim);background:var(--blue-bg);}
   .role-badge.role-user{color:var(--muted);}
-  .readonly-banner{
-    background:var(--yellow-bg);color:var(--yellow);border:1px solid rgba(250,204,21,0.3);
-    border-radius:10px;padding:9px 14px;font-size:12.5px;margin-bottom:16px;
-    display:flex;align-items:center;gap:8px;
-  }
 
   /* summary cards */
   .summary-grid{
@@ -185,6 +144,19 @@
   .badge-passed{background:var(--blue-bg);color:var(--blue);}
   .badge-failed{background:var(--red-bg);color:var(--red);}
   .badge-onhold{background:var(--yellow-bg);color:var(--yellow);}
+
+  /* Entry Checklist Badge/Btn */
+  .entry-btn{
+    display:inline-flex;align-items:center;gap:5px;padding:5px 10px;
+    border-radius:20px;font-size:11.5px;font-weight:600;cursor:pointer;
+    border:1px solid var(--border);background:var(--bg-alt);color:var(--muted);
+    transition:all 0.2s ease;
+  }
+  .entry-btn.active{
+    background:rgba(34,211,238,0.15);color:var(--accent);border-color:var(--accent-dim);
+  }
+  .entry-btn:hover{filter:brightness(1.15);}
+
   .type-tag{color:var(--muted);font-size:11.5px;}
   .pl-pos{color:var(--green);font-weight:600;}
   .pl-neg{color:var(--red);font-weight:600;}
@@ -270,10 +242,6 @@
     </div>
   </header>
 
-  <div class="readonly-banner" id="readonlyBanner" style="display:none;">
-    👁 Anda masuk sebagai <strong>User (Read-only)</strong> — hanya bisa melihat data, tidak bisa menambah/mengubah/menghapus akun.
-  </div>
-
   <div class="summary-grid">
     <div class="sum-card">
       <div class="sum-label">Total Modal Awal</div>
@@ -318,6 +286,7 @@
     <table>
       <thead>
         <tr>
+          <th>Entry</th>
           <th>Provider / Akun</th>
           <th>Tipe</th>
           <th>Pair Fokus</th>
@@ -432,12 +401,12 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* =========================================================================
-   KONFIGURASI SUPABASE — CREDENTIAL MILIK ANDA
+   KONFIGURASI SUPABASE
    ========================================================================= */
-const SUPABASE_URL = "https://ctxtkilkceninsvjqvxs.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_8lW88kfOjhFfvJ3nsE472g_d-x63Teu";
+const SUPABASE_URL = "https://dinovaalfito53.supabase.co"; 
+const SUPABASE_ANON_KEY = "PASANG_ANON_KEY_DARI_DASHBOARD_DI_SINI"; // Masukkan Anon Key Supabase di sini
 const TABLE_NAME = "trading_accounts";
-const ADMIN_PIN_DEFAULT = "4223"; // PIN Admin bawaan
+const ADMIN_PIN_DEFAULT = "4223";
 /* ========================================================================= */
 
 let sb = null;
@@ -456,12 +425,6 @@ function initSupabase(){
     setSyncStatus('off', 'Library Supabase gagal dimuat');
     return;
   }
-  if(SUPABASE_URL.includes("YOUR-PROJECT-ID") || SUPABASE_ANON_KEY.includes("YOUR-ANON")){
-    setSyncStatus('off', 'Belum dikonfigurasi');
-    document.getElementById('emptyState').style.display = 'block';
-    document.getElementById('emptyState').textContent = 'Supabase belum dikonfigurasi. Edit SUPABASE_URL dan SUPABASE_ANON_KEY.';
-    return;
-  }
 
   try {
     sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -477,7 +440,6 @@ async function fetchAccounts(){
   setSyncStatus('pending', 'Menyinkronkan...');
   
   try {
-    // Safety guard: Timeout 7 detik agar tidak stuck selamanya di status 'Menyinkronkan...'
     const fetchPromise = sb.from(TABLE_NAME).select('*').order('created_at', { ascending: true });
     const timeoutPromise = new Promise((_, reject) => 
       setTimeout(() => reject(new Error('Timeout koneksi Supabase')), 7000)
@@ -493,7 +455,7 @@ async function fetchAccounts(){
   } catch (err) {
     console.error('Supabase fetch error:', err);
     setSyncStatus('off', 'Gagal terhubung');
-    render(); // Tetap panggil render agar tabel/UI merespons
+    render();
   }
 }
 
@@ -506,7 +468,24 @@ function subscribeRealtime(){
       })
       .subscribe();
   } catch(e) {
-    console.warn('Realtime subscription skipped/failed:', e);
+    console.warn('Realtime subscription failed:', e);
+  }
+}
+
+/* FITUR TOGGLE ENTRY (BISA DIAKSES ADMIN & USER) */
+async function toggleEntry(id, currentVal){
+  // 1. Optimistic Update UI dulu agar responsif
+  const acc = accounts.find(a => a.id === id);
+  if(acc) acc.has_pending_order = !currentVal;
+  render();
+
+  // 2. Kirim update ke kolom has_pending_order di Supabase
+  const { error } = await sb.from(TABLE_NAME).update({ has_pending_order: !currentVal }).eq('id', id);
+  if(error){
+    console.error('Gagal update status pending order:', error);
+    // Rollback jika gagal
+    if(acc) acc.has_pending_order = currentVal;
+    render();
   }
 }
 
@@ -516,7 +495,7 @@ function isAdmin(){
 
 function blockIfNotAdmin(){
   if(!isAdmin()){
-    alert('Mode User hanya bisa melihat data. Tambah/ubah/hapus hanya untuk Admin.');
+    alert('Mode User hanya bisa melihat data dan checklist entry.');
     return true;
   }
   return false;
@@ -590,8 +569,15 @@ function render(){
     const pl = (Number(a.current_balance)||0) - (Number(a.initial_balance)||0);
     const plClass = pl >= 0 ? 'pl-pos' : 'pl-neg';
     const plSign = pl >= 0 ? '+' : '';
+    const isEntry = !!a.has_pending_order;
+
     const tr = document.createElement('tr');
     tr.innerHTML = `
+      <td data-label="Entry">
+        <button class="entry-btn ${isEntry ? 'active' : ''}" onclick="toggleEntry('${a.id}', ${isEntry})" title="Klik untuk toggle status entry">
+          ${isEntry ? '🎯 Ready' : '⚪ Wait'}
+        </button>
+      </td>
       <td data-label="Provider">
         <div class="provider-cell">${escapeHtml(a.provider||'-')}</div>
         <div class="provider-sub">${escapeHtml(a.login_id||'')}</div>
@@ -698,12 +684,6 @@ document.getElementById('filterType').addEventListener('change', render);
 
 /* ---------------- ROLE: user / admin ---------------- */
 const ADMIN_PIN_KEY = 'tt_admin_pin_hash';
-const OLD_PIN_KEY = 'tt_pin_hash';
-
-if(localStorage.getItem(OLD_PIN_KEY) && !localStorage.getItem(ADMIN_PIN_KEY)){
-  localStorage.setItem(ADMIN_PIN_KEY, localStorage.getItem(OLD_PIN_KEY));
-  localStorage.removeItem(OLD_PIN_KEY);
-}
 
 function simpleHash(str){
   let hash = 0;
