@@ -723,15 +723,14 @@ function currentRole(){ return sessionStorage.getItem('tt_role') === 'admin' ? '
 function updateRoleUI(){
   const role = currentRole();
   const badge = document.getElementById('roleBadge');
-  const banner = document.getElementById('readonlyBanner');
   const addBtn = document.getElementById('addBtn');
   const loginBtn = document.getElementById('adminLoginBtn');
   const logoutBtn = document.getElementById('adminLogoutBtn');
   const changePinBtn = document.getElementById('changeAdminPinBtn');
+
   if(role === 'admin'){
     badge.textContent = '🛡 Admin';
     badge.className = 'role-badge role-admin';
-    banner.style.display = 'none';
     addBtn.style.display = 'inline-block';
     loginBtn.style.display = 'none';
     logoutBtn.style.display = 'inline-block';
@@ -739,7 +738,6 @@ function updateRoleUI(){
   } else {
     badge.textContent = '👁 User (Read-only)';
     badge.className = 'role-badge role-user';
-    banner.style.display = 'flex';
     addBtn.style.display = 'none';
     loginBtn.style.display = 'inline-block';
     logoutBtn.style.display = 'none';
