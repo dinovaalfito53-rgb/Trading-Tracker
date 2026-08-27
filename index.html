@@ -404,7 +404,7 @@
    KONFIGURASI SUPABASE
    ========================================================================= */
 const SUPABASE_URL = "https://ctxtkilkceninsvjqvxs.supabase.co"; 
-const SUPABASE_ANON_KEY = "sb_publishable_8lW88kfOjhFfvJ3nsE472g_d-x63Teu"; // Masukkan Anon Key Supabase di sini
+const SUPABASE_ANON_KEY = "sb_publishable_8lW88kfOjhFfvJ3nsE472g_d-x63Teu";
 const TABLE_NAME = "trading_accounts";
 const ADMIN_PIN_DEFAULT = "4223";
 /* ========================================================================= */
@@ -474,16 +474,13 @@ function subscribeRealtime(){
 
 /* FITUR TOGGLE ENTRY (BISA DIAKSES ADMIN & USER) */
 async function toggleEntry(id, currentVal){
-  // 1. Optimistic Update UI dulu agar responsif
   const acc = accounts.find(a => a.id === id);
   if(acc) acc.has_pending_order = !currentVal;
   render();
 
-  // 2. Kirim update ke kolom has_pending_order di Supabase
   const { error } = await sb.from(TABLE_NAME).update({ has_pending_order: !currentVal }).eq('id', id);
   if(error){
     console.error('Gagal update status pending order:', error);
-    // Rollback jika gagal
     if(acc) acc.has_pending_order = currentVal;
     render();
   }
@@ -599,12 +596,14 @@ function render(){
     tbody.appendChild(tr);
   });
 
-  // summary
-  const totalInitial = accounts.reduce((s,a)=> s + (Number(a.initial_balance)||0), 0);
-  const totalCurrent = accounts.reduce((s,a)=> s + (Number(a.current_balance)||0), 0);
+  // SUMMARY: Hanya memproses akun yang berstatus "Active"
+  const activeAccounts = accounts.filter(a => a.status === 'Active');
+  
+  const totalInitial = activeAccounts.reduce((s,a)=> s + (Number(a.initial_balance)||0), 0);
+  const totalCurrent = activeAccounts.reduce((s,a)=> s + (Number(a.current_balance)||0), 0);
   const totalPL = totalCurrent - totalInitial;
   const plPct = totalInitial > 0 ? (totalPL/totalInitial*100) : 0;
-  const activeCount = accounts.filter(a => a.status === 'Active').length;
+  const activeCount = activeAccounts.length;
 
   document.getElementById('sumInitial').textContent = fmtMoney(totalInitial);
   document.getElementById('sumCurrent').textContent = fmtMoney(totalCurrent);
