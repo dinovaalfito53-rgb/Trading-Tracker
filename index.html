@@ -86,7 +86,7 @@
 
   /* summary cards */
   .summary-grid{
-    display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;
+    display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px;
   }
   .sum-card{
     background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
@@ -145,6 +145,14 @@
   .badge-failed{background:var(--red-bg);color:var(--red);}
   .badge-onhold{background:var(--yellow-bg);color:var(--yellow);}
 
+  /* Kondisi Account Badge */
+  .condition-badge{
+    display:inline-block;padding:4px 10px;border-radius:8px;font-size:12px;font-weight:600;
+  }
+  .cond-drawdown{background:var(--red-bg);color:var(--red);}
+  .cond-profit{background:var(--green-bg);color:var(--green);}
+  .cond-be{background:var(--yellow-bg);color:var(--yellow);}
+
   /* Entry Checklist Badge/Btn */
   .entry-btn{
     display:inline-flex;align-items:center;gap:5px;padding:5px 10px;
@@ -158,8 +166,6 @@
   .entry-btn:hover{filter:brightness(1.15);}
 
   .type-tag{color:var(--muted);font-size:11.5px;}
-  .pl-pos{color:var(--green);font-weight:600;}
-  .pl-neg{color:var(--red);font-weight:600;}
   .row-actions{display:flex;gap:6px;}
   .icon-btn{
     background:transparent;border:1px solid var(--border);color:var(--muted);
@@ -244,22 +250,19 @@
 
   <div class="summary-grid">
     <div class="sum-card">
-      <div class="sum-label">Total Modal Awal</div>
-      <div class="sum-value" id="sumInitial">$0</div>
-    </div>
-    <div class="sum-card">
-      <div class="sum-label">Total Balance Saat Ini</div>
-      <div class="sum-value" id="sumCurrent">$0</div>
-    </div>
-    <div class="sum-card">
-      <div class="sum-label">Total P/L</div>
-      <div class="sum-value" id="sumPL">$0</div>
-      <div class="sum-sub" id="sumPLPct">0%</div>
-    </div>
-    <div class="sum-card">
       <div class="sum-label">Akun Aktif</div>
       <div class="sum-value" id="sumActive">0</div>
       <div class="sum-sub" id="sumTotalAcc">dari 0 total akun</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">Profit / Surplus</div>
+      <div class="sum-value pos" id="sumProfitCount">0</div>
+      <div class="sum-sub">Akun Profit</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">Drawdown</div>
+      <div class="sum-value neg" id="sumDrawdownCount">0</div>
+      <div class="sum-sub">Akun Drawdown</div>
     </div>
   </div>
 
@@ -271,6 +274,12 @@
       <option value="Passed">Passed</option>
       <option value="Failed">Failed</option>
       <option value="On Hold">On Hold</option>
+    </select>
+    <select id="filterCondition">
+      <option value="">Semua Kondisi</option>
+      <option value="Profit/Surplus">Profit/Surplus</option>
+      <option value="Drawdown">Drawdown</option>
+      <option value="BE">BE</option>
     </select>
     <select id="filterType">
       <option value="">Semua Tipe</option>
@@ -290,9 +299,7 @@
           <th>Provider / Akun</th>
           <th>Tipe</th>
           <th>Pair Fokus</th>
-          <th>Modal Awal</th>
-          <th>Balance Saat Ini</th>
-          <th>P/L</th>
+          <th>Kondisi Balance</th>
           <th>Status</th>
           <th></th>
         </tr>
@@ -341,13 +348,13 @@
             <option value="On Hold">On Hold</option>
           </select>
         </div>
-        <div class="field">
-          <label>Modal Awal (Initial Balance)</label>
-          <input type="number" step="0.01" id="fInitial" placeholder="0.00" required>
-        </div>
-        <div class="field">
-          <label>Balance Saat Ini</label>
-          <input type="number" step="0.01" id="fCurrent" placeholder="0.00" required>
+        <div class="field full">
+          <label>Kondisi Balance / Hasil</label>
+          <select id="fCondition" required>
+            <option value="BE">BE (Break Even)</option>
+            <option value="Profit/Surplus">Profit/Surplus</option>
+            <option value="Drawdown">Drawdown</option>
+          </select>
         </div>
         <div class="field full">
           <label>Catatan Tambahan</label>
@@ -523,11 +530,6 @@ async function deleteAccount(id){
 }
 
 /* ---------------- RENDER ---------------- */
-function fmtMoney(n){
-  n = Number(n) || 0;
-  return '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
-}
-
 function statusBadgeClass(status){
   switch(status){
     case 'Active': return 'badge-active';
@@ -538,14 +540,25 @@ function statusBadgeClass(status){
   }
 }
 
+function conditionBadgeClass(cond){
+  switch(cond){
+    case 'Drawdown': return 'cond-drawdown';
+    case 'Profit/Surplus': return 'cond-profit';
+    case 'BE': return 'cond-be';
+    default: return 'cond-be';
+  }
+}
+
 function render(){
   const search = document.getElementById('searchInput').value.trim().toLowerCase();
   const fStatus = document.getElementById('filterStatus').value;
+  const fCondition = document.getElementById('filterCondition').value;
   const fType = document.getElementById('filterType').value;
 
   const filtered = accounts.filter(a => {
     if(search && !(a.provider||'').toLowerCase().includes(search)) return false;
     if(fStatus && a.status !== fStatus) return false;
+    if(fCondition && (a.account_condition || 'BE') !== fCondition) return false;
     if(fType && a.account_type !== fType) return false;
     return true;
   });
@@ -563,10 +576,8 @@ function render(){
   }
 
   filtered.forEach(a => {
-    const pl = (Number(a.current_balance)||0) - (Number(a.initial_balance)||0);
-    const plClass = pl >= 0 ? 'pl-pos' : 'pl-neg';
-    const plSign = pl >= 0 ? '+' : '';
     const isEntry = !!a.has_pending_order;
+    const condition = a.account_condition || 'BE';
 
     const tr = document.createElement('tr');
     tr.innerHTML = `
@@ -581,9 +592,9 @@ function render(){
       </td>
       <td data-label="Tipe"><span class="type-tag">${escapeHtml(a.account_type||'-')}</span></td>
       <td data-label="Pair Fokus">${escapeHtml(a.pair_focus||'-')}</td>
-      <td data-label="Modal Awal">${fmtMoney(a.initial_balance)}</td>
-      <td data-label="Balance Saat Ini">${fmtMoney(a.current_balance)}</td>
-      <td data-label="P/L"><span class="${plClass}">${plSign}${fmtMoney(pl)}</span></td>
+      <td data-label="Kondisi Balance">
+        <span class="condition-badge ${conditionBadgeClass(condition)}">${escapeHtml(condition)}</span>
+      </td>
       <td data-label="Status"><span class="badge ${statusBadgeClass(a.status)}">${escapeHtml(a.status||'-')}</span></td>
       <td data-label="">
         ${isAdmin() ? `
@@ -596,23 +607,16 @@ function render(){
     tbody.appendChild(tr);
   });
 
-  // SUMMARY: Hanya memproses akun yang berstatus "Active"
+  // SUMMARY
   const activeAccounts = accounts.filter(a => a.status === 'Active');
-  
-  const totalInitial = activeAccounts.reduce((s,a)=> s + (Number(a.initial_balance)||0), 0);
-  const totalCurrent = activeAccounts.reduce((s,a)=> s + (Number(a.current_balance)||0), 0);
-  const totalPL = totalCurrent - totalInitial;
-  const plPct = totalInitial > 0 ? (totalPL/totalInitial*100) : 0;
   const activeCount = activeAccounts.length;
+  const profitCount = activeAccounts.filter(a => a.account_condition === 'Profit/Surplus').length;
+  const drawdownCount = activeAccounts.filter(a => a.account_condition === 'Drawdown').length;
 
-  document.getElementById('sumInitial').textContent = fmtMoney(totalInitial);
-  document.getElementById('sumCurrent').textContent = fmtMoney(totalCurrent);
-  const plEl = document.getElementById('sumPL');
-  plEl.textContent = (totalPL>=0?'+':'') + fmtMoney(totalPL);
-  plEl.className = 'sum-value ' + (totalPL>=0 ? 'pos':'neg');
-  document.getElementById('sumPLPct').textContent = (plPct>=0?'+':'') + plPct.toFixed(2) + '%';
   document.getElementById('sumActive').textContent = activeCount;
   document.getElementById('sumTotalAcc').textContent = 'dari ' + accounts.length + ' total akun';
+  document.getElementById('sumProfitCount').textContent = profitCount;
+  document.getElementById('sumDrawdownCount').textContent = drawdownCount;
 }
 
 function escapeHtml(str){
@@ -645,8 +649,7 @@ function openEdit(id){
   document.getElementById('fLogin').value = a.login_id || '';
   document.getElementById('fPair').value = a.pair_focus || '';
   document.getElementById('fStatus').value = a.status || 'Active';
-  document.getElementById('fInitial').value = a.initial_balance || 0;
-  document.getElementById('fCurrent').value = a.current_balance || 0;
+  document.getElementById('fCondition').value = a.account_condition || 'BE';
   document.getElementById('fNotes').value = a.notes || '';
   modalOverlay.style.display = 'flex';
 }
@@ -667,8 +670,7 @@ document.getElementById('accountForm').addEventListener('submit', function(e){
     login_id: document.getElementById('fLogin').value.trim(),
     pair_focus: document.getElementById('fPair').value.trim(),
     status: document.getElementById('fStatus').value,
-    initial_balance: parseFloat(document.getElementById('fInitial').value) || 0,
-    current_balance: parseFloat(document.getElementById('fCurrent').value) || 0,
+    account_condition: document.getElementById('fCondition').value,
     notes: document.getElementById('fNotes').value.trim()
   };
   const idVal = document.getElementById('fId').value;
@@ -679,6 +681,7 @@ document.getElementById('accountForm').addEventListener('submit', function(e){
 
 document.getElementById('searchInput').addEventListener('input', render);
 document.getElementById('filterStatus').addEventListener('change', render);
+document.getElementById('filterCondition').addEventListener('change', render);
 document.getElementById('filterType').addEventListener('change', render);
 
 /* ---------------- ROLE: user / admin ---------------- */
